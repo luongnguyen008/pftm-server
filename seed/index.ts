@@ -11,6 +11,8 @@ async function createTable() {
       actual_formatted TEXT,
       forecast REAL,
       forecast_formatted TEXT,
+      unit TEXT,
+      currency TEXT,
       created_at INTEGER DEFAULT (unixepoch()),
       updated_at INTEGER DEFAULT (unixepoch()),
       PRIMARY KEY (country, indicator_type, timestamp, frequency)

@@ -1,14 +1,9 @@
-import {
-  COUNTRY_CODE,
-  FREQUENCY,
-  INDICATOR_TYPE,
-  IndicatorValue,
-} from "../../types";
+import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, IndicatorValue } from "../../types";
 import { upsertIndicators } from "../common/repository";
 
 const fetchAndSave = async (
   indicatorType: INDICATOR_TYPE,
-  fetchLogic: () => Promise<IndicatorValue[]>,
+  fetchLogic: () => Promise<IndicatorValue[]>
 ) => {
   console.log(`[AUS] Fetching ${indicatorType}...`);
   try {

@@ -25,6 +25,7 @@ export enum INDICATOR_TYPE {
   LIQUIDITY_COVER = "LIQUIDITY_COVER",
   TREASURY_10_YEAR = "TREASURY_10_YEAR",
   CBBS_TOTAL_ASSETS = "CBBS_TOTAL_ASSETS",
+  CBBS_TOTAL_ASSETS_TO_GDP = "CBBS_TOTAL_ASSETS_TO_GDP",
 }
 
 export enum FREQUENCY {
@@ -42,6 +43,16 @@ export enum TRADABLE_TYPES {
   COMMOD_MIN = "COMMOD_MIN",
 }
 
+export enum UNIT {
+  THOUSANDS = "THOUSANDS",
+  BILLIONS = "BILLIONS",
+  MILLIONS = "MILLIONS",
+  PERCENT = "PERCENT",
+  INDEX = "INDEX",
+  POINTS = "NUMBER",
+  CURRENCY = "CURRENCY",
+}
+
 export interface IndicatorValue {
   country: COUNTRY_CODE;
   indicator_type: INDICATOR_TYPE;
@@ -51,6 +62,8 @@ export interface IndicatorValue {
   actual_formatted?: string;
   forecast?: number;
   forecast_formatted?: string;
+  unit?: UNIT;
+  currency?: Currency;
 }
 
 export enum COUNTRY_CODE {
