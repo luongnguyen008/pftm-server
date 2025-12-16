@@ -5,6 +5,7 @@
   "license": "MIT",
   "description": "",
   "scripts": {
+    "testdata": "tsx test/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "seed": "tsx seed/index.ts",
@@ -15,8 +16,11 @@
   "author": "",
   "dependencies": {
     "@libsql/client": "^0.15.15",
+    "cheerio": "^1.1.2",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
+    "puppeteer": "^24.33.0",
+    "tsx": "^4.21.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

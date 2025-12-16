@@ -107,9 +107,13 @@ export const upsertIndicators = async (data: IndicatorValue[]) => {
   }
 };
 
-export const getIndicatorsByType = async (
-  { country, indicatorType }: { country: COUNTRY_CODE, indicatorType: INDICATOR_TYPE }
-): Promise<IndicatorValue[]> => {
+export const getIndicatorsByType = async ({
+  country,
+  indicatorType,
+}: {
+  country: COUNTRY_CODE;
+  indicatorType: INDICATOR_TYPE;
+}): Promise<IndicatorValue[]> => {
   try {
     const result = await db.execute({
       sql: `SELECT * FROM indicators WHERE country = ? AND indicator_type = ? ORDER BY timestamp ASC`,
