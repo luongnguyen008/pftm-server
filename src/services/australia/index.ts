@@ -1,48 +1,77 @@
-import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, IndicatorValue } from "../../types";
-import { upsertIndicators } from "../common/repository";
+import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./cbbs";
+import { updateEmploymentChange, updateUnemploymentRate } from "./employment";
+import {
+    updateBudgetSurplusDeficit,
+    updateDebtToGDP,
+    updateGDPGrowth,
+    updateGDPNominal,
+    updateGovernmentDebt,
+    updateGovernmentInterestBills,
+    updateGovernmentPayments,
+    updateGovernmentReceipts,
+    updateInterestBillsToGDP,
+    updateLiquidityCover,
+    updateSurplusDeficitToGDP,
+    updateTreasuryYield10Y,
+} from "./government";
+import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./inflation";
+import { updateInterestRate } from "./interest-rates";
+import { updateMoneySupplyM2 } from "./money-supply";
+import {
+    updateBuildingPermits,
+    updateConsumerSentiment,
+    updateManufacturingPMI,
+    updateServicesPMI,
+} from "./surveys";
 
-const fetchAndSave = async (
-  indicatorType: INDICATOR_TYPE,
-  fetchLogic: () => Promise<IndicatorValue[]>
-) => {
-  console.log(`[AUS] Fetching ${indicatorType}...`);
-  try {
-    const data = await fetchLogic();
-    await upsertIndicators(data);
-    console.log(`[AUS] Saved ${data.length} records for ${indicatorType}`);
-  } catch (error) {
-    console.error(`[AUS] Error fetching/saving ${indicatorType}:`, error);
-  }
-};
-
-export const updateRBAInterestRate = async () => {
-  await fetchAndSave(INDICATOR_TYPE.IR, async () => {
-    // TODO: Fetch from RBA website
-    return [];
-  });
-};
-
-export const updateGDP = async () => {
-  await fetchAndSave(INDICATOR_TYPE.GDP_GROWTH, async () => {
-    return [];
-  });
-};
-
-export const updateCPI = async () => {
-  await fetchAndSave(INDICATOR_TYPE.CPI, async () => {
-    return [];
-  });
-};
-
-export const updateEmployment = async () => {
-  await fetchAndSave(INDICATOR_TYPE.EMPLOYMENT_CHANGE, async () => {
-    return [];
-  });
-};
+// ==========================================
+// MASTER RUNNER
+// ==========================================
 
 export const updateAllAustraliaIndicators = async () => {
-  await updateRBAInterestRate();
-  await updateGDP();
-  await updateCPI();
-  await updateEmployment();
+    console.log("Starting update for all Australia indicators...");
+
+    // 1. Production & Consumption
+    await updateManufacturingPMI();
+    await updateServicesPMI();
+    await updateConsumerSentiment();
+    await updateBuildingPermits();
+
+    // 2. Money Supply
+    await updateMoneySupplyM2();
+
+    // 3. Interest Rate
+    await updateInterestRate();
+
+    // 4. Inflation
+    await updateCPI();
+    await updateCoreCPI();
+    await updatePPI();
+    await updateCorePPI();
+
+    // 5. Labor
+    await updateEmploymentChange();
+    await updateUnemploymentRate();
+
+    // 6. GDP & Govt
+    await updateGDPNominal();
+    await updateGDPGrowth();
+    await updateGovernmentDebt();
+    await updateGovernmentReceipts();
+    await updateGovernmentPayments();
+    await updateGovernmentInterestBills();
+    await updateDebtToGDP();
+    await updateBudgetSurplusDeficit();
+    await updateSurplusDeficitToGDP();
+    await updateInterestBillsToGDP();
+    await updateLiquidityCover();
+
+    // 7. Treasury Yield 10Y
+    await updateTreasuryYield10Y();
+
+    // 8. Central Bank
+    await updateCentralBankBalanceSheet();
+    await updateCBBSTotalAssetsToGDP();
+
+    console.log("Completed update for all Australia indicators.");
 };

@@ -1,5 +1,6 @@
-import puppeteer, { Browser, Page } from "puppeteer";
+import { Browser, Page } from "puppeteer";
 import { numberFormatter } from "../../lib/number-formatter";
+import { PuppeteerClient } from "./puppeteer-client";
 
 interface MQL5DataPoint {
     timestamp: number; // Unix timestamp in seconds
@@ -18,8 +19,6 @@ async function getTotalPages(page: Page): Promise<number> {
     try {
         // Find all pagination links
         const paginationLinks = await page.$$(".paginatorEx a");
-
-        console.log("Pagination links found:", paginationLinks.length);
 
         if (paginationLinks.length === 0) {
             // If no pagination, there's only 1 page
@@ -78,9 +77,7 @@ async function fetchPageData(page: Page): Promise<MQL5DataPoint[]> {
                 }
 
                 // Get the actual value text
-                const actualValueElement = item.querySelector(
-                    ".event-table-history__actual__value"
-                );
+                const actualValueElement = item.querySelector(".event-table-history__actual__value");
                 const actualValueText = actualValueElement?.textContent?.trim() || "";
 
                 // Get the forecast value text
@@ -97,8 +94,6 @@ async function fetchPageData(page: Page): Promise<MQL5DataPoint[]> {
 
             return results;
         });
-
-        console.log(`Found ${data.length} items on this page`);
 
         // Process the data and convert to proper format
         const eventHistoryItems: MQL5DataPoint[] = [];
@@ -143,68 +138,65 @@ export async function fetchMQL5History(baseUrl: string): Promise<MQL5DataPoint[]
     let browser: Browser | null = null;
 
     try {
-        console.log("Launching browser...");
-        browser = await puppeteer.launch({
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-blink-features=AutomationControlled",
-            ],
-        });
+        browser = await PuppeteerClient.launchBrowser();
+        const page = await PuppeteerClient.createPage(browser);
 
-        const page = await browser.newPage();
-
-        // Set a realistic user agent
-        await page.setUserAgent(
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        );
-
-        // Set viewport
-        await page.setViewport({ width: 1920, height: 1080 });
-
+        // NOTE: Optimization - Go straight to history page 1
         // Navigate to the base URL first to get pagination info
-        console.log("Navigating to base URL to get pagination...");
-        console.log("Base URL:", baseUrl);
-        await page.goto(baseUrl, { waitUntil: "networkidle2", timeout: 30000 });
+        const firstPageUrl = `${baseUrl}/history?page=1`;
+        await page.goto(firstPageUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
 
-        // Get total number of pages from the base page
-        console.log("Getting total pages from pagination...");
+        // Get total number of pages from the first page
         const totalPages = await getTotalPages(page);
-        console.log(`Found ${totalPages} page(s) to fetch`);
 
         const allData: MQL5DataPoint[] = [];
 
-        // Fetch all pages
-        for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            console.log(`Fetching page ${pageNum}/${totalPages}...`);
+        // Fetch data from page 1 immediately
+        const page1Data = await fetchPageData(page);
+        allData.push(...page1Data);
 
-            // Navigate to the history page
-            const pageUrl = `${baseUrl}/history?page=${pageNum}`;
-            console.log("Navigating to:", pageUrl);
-            await page.goto(pageUrl, { waitUntil: "networkidle2", timeout: 30000 });
+        if (totalPages > 1) {
+            // Create a queue of pages to fetch
+            const pagesToFetch = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
 
-            // Fetch data from current page
-            const pageData = await fetchPageData(page);
-            allData.push(...pageData);
+            // Process in chunks to avoid opening too many tabs
+            const CONCURRENCY_LIMIT = 5;
 
-            // Add a small delay between pages
-            if (pageNum < totalPages) {
-                await new Promise((resolve) => setTimeout(resolve, 1000));
+            for (let i = 0; i < pagesToFetch.length; i += CONCURRENCY_LIMIT) {
+                const chunk = pagesToFetch.slice(i, i + CONCURRENCY_LIMIT);
+
+                const batchPromises = chunk.map(async (pageNum) => {
+                    let pageTab: Page | null = null;
+                    try {
+                        if (!browser) throw new Error("Browser closed");
+                        pageTab = await PuppeteerClient.createPage(browser);
+
+                        const pageUrl = `${baseUrl}/history?page=${pageNum}`;
+                        await pageTab.goto(pageUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+                        const data = await fetchPageData(pageTab!);
+                        return data;
+                    } catch (err) {
+                        console.error(`Error fetching page ${pageNum}:`, err);
+                        return [];
+                    } finally {
+                        if (pageTab) await pageTab.close();
+                    }
+                });
+
+                const batchResults = await Promise.all(batchPromises);
+                batchResults.forEach((data) => allData.push(...data));
             }
         }
-
-        console.log(`Total records fetched: ${allData.length}`);
-
         // Sort by timestamp (oldest to newest)
-        return allData.sort((a, b) => a.timestamp - b.timestamp);
+        const sortedData = allData.sort((a, b) => a.timestamp - b.timestamp);
+
+        return sortedData;
     } catch (error) {
         console.error("Error fetching MQL5 history:", error);
         return [];
     } finally {
         if (browser) {
             await browser.close();
-            console.log("Browser closed");
         }
     }
 }
