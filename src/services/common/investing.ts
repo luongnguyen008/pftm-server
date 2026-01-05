@@ -9,6 +9,7 @@ import {
   UNIT,
 } from "../../types";
 import { toTimestamp } from "../../lib/time";
+import { fetchWithRetry } from "../../lib/api-client";
 
 export const fetchInvestingData = async ({
   url,
@@ -26,7 +27,7 @@ export const fetchInvestingData = async ({
   currency?: Currency;
 }): Promise<IndicatorValue[]> => {
   try {
-    const response = await fetch(url);
+    const response = await fetchWithRetry(url, {}, 3, 1000);
     const json = (await response.json()) as InvestingDataType;
 
     // Validate response structure

@@ -1,4 +1,5 @@
 import { toTimestamp } from "../../lib/time";
+import { fetchWithRetry } from "../../lib/api-client";
 import {
   COUNTRY_CODE,
   FredDataObservation,
@@ -28,14 +29,16 @@ export const getDataFRED = async ({
   try {
     const API_KEY = "811703ee9116f794637814b4d64df78d";
 
-    const response = await fetch(
+    const response = await fetchWithRetry(
       `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${API_KEY}&file_type=json`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
+      3, // maxRetries
+      1000 // initialDelayMs
     );
     const data = (await response.json()) as FredDataType;
     return data.observations.map((item: FredDataObservation) => {

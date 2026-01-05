@@ -60,9 +60,9 @@ export const updateBuildingPermits = async () => {
     country: COUNTRY_CODE.AUSTRALIA,
     fetchLogic: async () => {
       return getDataABS({
-        pathName: 'industry/building-and-construction/building-approvals-australia/',
-        fileName: '8731006.xlsx',
-        seriesId: 'A418431A',
+        pathName: "industry/building-and-construction/building-approvals-australia/",
+        fileName: "8731006.xlsx",
+        seriesId: "A418431A",
         country: COUNTRY_CODE.AUSTRALIA,
         indicatorType: INDICATOR_TYPE.BUILDING_PERMITS,
         frequency: FREQUENCY.MONTHLY,

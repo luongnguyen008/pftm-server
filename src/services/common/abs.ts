@@ -72,10 +72,7 @@ async function findExcelFileABS(
 /**
  * Function to read the ABS Excel file and extract series data
  */
-async function readExcelFileABS(
-  data: Buffer,
-  metadata: TargetSeries
-): Promise<IndicatorValue[]> {
+async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<IndicatorValue[]> {
   try {
     if (!data) return [];
     const { seriesId, country, indicatorType, frequency, unit } = metadata;
@@ -118,7 +115,7 @@ async function readExcelFileABS(
     }
     console.log("seriesIdRow", seriesIdRow);
     console.log("dataStartIndex", dataStartIndex);
-    
+
     if (!seriesIdRow) {
       console.warn(`[ABS] Series ID ${seriesId} header row not found`);
       return [];

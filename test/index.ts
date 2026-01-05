@@ -1,10 +1,18 @@
-import { fetchMQL5History } from "../src/services/common/mql5";
+import { getHistoricalRates } from "dukascopy-node";
 
-async function main() {
-  const data = await fetchMQL5History(
-    "https://www.mql5.com/en/economic-calendar/australia/commonwealth-bank-manufacturing-pmi"
-  );
-  console.log(data);
-}
+(async () => {
+  try {
+    const data = await getHistoricalRates({
+      instrument: "eurusd",
+      dates: {
+        from: new Date("2021-03-30"),
+        to: new Date("2021-03-31"),
+      },
+      timeframe: "tick",
+    });
 
-main();
+    console.log(data);
+  } catch (error) {
+    console.log("error", error);
+  }
+})();

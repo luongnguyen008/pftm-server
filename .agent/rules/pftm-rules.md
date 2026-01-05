@@ -2,7 +2,24 @@
 trigger: always_on
 ---
 
-# PFTM Server - Coding Standards
+# PFTM Server - Overview
+
+> [!NOTE]
+> **Improvement History**: See [IMPROVEMENTS.md](file:///Users/nguyennl-difisoft/pftm-server/IMPROVEMENTS.md) for a log of all infrastructure improvements, new features, and architectural changes made to this project.
+
+## About These Rules
+
+These coding standards ensure consistency, maintainability, and quality across the PFTM Server project. The rules are split into multiple files for easier navigation:
+
+- **code-formatting.md** - Prettier and code style
+- **typescript-standards.md** - TypeScript best practices
+- **date-time.md** - Date/time handling
+- **database.md** - Database patterns
+- **error-handling.md** - Error handling and logging
+- **file-organization.md** - Project structure
+- **data-fetching.md** - API and data patterns
+- **module-boundaries.md** - Import and dependency rules
+- **testing.md** - Testing conventions
 
 ## General Principles
 
@@ -11,236 +28,23 @@ trigger: always_on
 - Follow the DRY (Don't Repeat Yourself) principle
 - Keep functions focused and single-purpose
 
-## Code Formatting
+## Key Principles Summary
 
-### Prettier
+1. Use `fetchAndSave` for all indicator fetching
+2. Never bypass `upsertIndicators` from services
+3. Extract common logic to `lib/` or `services/common/`
+4. Follow identical structure for each country
+5. Always use enum types, never string literals
+6. Keep functions focused and single-purpose
+7. Use TypeScript strictly (no `any` types)
 
-- **REQUIRED**: All code must be formatted with Prettier
-- Run `yarn format` before committing code
-- Run `yarn format:check` in CI/CD pipelines
-- Configuration (`.prettierrc`):
-  - Semi-colons: Required
-  - Quotes: Double quotes
-  - Print width: 100 characters
-  - Tab width: 2 spaces
-  - No tabs (use spaces)
-  - Trailing commas: ES5 compatible
-  - Arrow function parentheses: Always
-- Never commit unformatted code
+## Benefits
 
-## TypeScript Standards
+These rules ensure:
 
-### Type Safety
-
-- Always use proper enum types instead of `any`
-- Example: Use `COUNTRY_CODE`, `INDICATOR_TYPE`, `FREQUENCY`, `UNIT`, `Currency` enums
-- When mapping database results, cast to specific enum types:
-  ```typescript
-  country: row.country as COUNTRY_CODE,
-  indicator_type: row.indicator_type as INDICATOR_TYPE,
-  ```
-
-### Imports
-
-- Group imports logically:
-  1. External libraries (e.g., `dayjs`)
-  2. Types/interfaces
-  3. Local utilities/services
-- Use named imports from index files when available
-
-## Date and Time Handling
-
-### Always Use dayjs
-
-- **REQUIRED**: Use `dayjs` for all date/time operations
-- Never use native `Date` object for calculations or formatting
-- Import: `import dayjs from "dayjs";`
-- Examples:
-
-  ```typescript
-  // ✅ Correct
-  const date = dayjs.unix(timestamp);
-  const year = date.year();
-  const month = date.month(); // 0-11
-
-  // ❌ Wrong
-  const date = new Date(timestamp * 1000);
-  const year = date.getFullYear();
-  ```
-
-### Timestamp Standards
-
-- Store timestamps as Unix seconds (not milliseconds)
-- Use `dayjs.unix(timestamp)` to parse
-- Use `date.unix()` to get timestamp
-
-## Database Standards
-
-### Schema Design
-
-- Always include `unit` and `currency` fields for financial/economic indicators
-- Use `created_at` and `updated_at` with `unixepoch()` default
-- Define composite PRIMARY KEYs for uniqueness
-
-### Unit Handling
-
-- Always specify `unit` when creating indicator data
-- Use the `UNIT` enum: `BILLIONS`, `MILLIONS`, `THOUSANDS`, `PERCENT`, `INDEX`, `POINTS`
-- Add `currency` field when applicable (use `Currency` enum)
-
-### Data Normalization
-
-- Create helper functions for unit conversions (e.g., `convertToBillions`)
-- Use switch statements for unit-based logic
-- Handle missing units gracefully with sensible defaults
-
-## Derived Calculations
-
-### Matching Data Across Time Periods
-
-- **REQUIRED**: For quarterly data matching, use Year-Quarter keys
-- Example:
-  ```typescript
-  const getYearQuarter = (timestamp: number): string => {
-    const date = dayjs.unix(timestamp);
-    const month = date.month(); // 0-11
-    const quarter = Math.floor(month / 3) + 1;
-    return `${date.year()}-Q${quarter}`;
-  };
-  ```
-- Use `Map<string, T>` with Year-Quarter keys instead of exact timestamp matching
-- This handles timestamp variations (start vs. end of period)
-
-### Unit Conversion for Calculations
-
-- Always normalize units before mathematical operations
-- Document the expected units in comments
-- Example:
-  ```typescript
-  // GOVT_DEBT: Millions, GDP_NOMINAL: Billions
-  const debtBillions = convertToBillions(debt.actual, debt.unit);
-  const gdpBillions = convertToBillions(gdp.actual, gdp.unit);
-  const ratio = (debtBillions / gdpBillions) * 100;
-  ```
-
-## Error Handling
-
-### Logging
-
-- Use consistent log format: `[SERVICE] Action description`
-- Examples:
-  ```typescript
-  console.log(`[USA] Fetching ${indicatorType}...`);
-  console.warn("No Government Debt data found.");
-  console.error("Error upserting indicators:", error);
-  ```
-
-### Data Validation
-
-- Check for empty datasets before processing
-- Return early with empty arrays when prerequisites aren't met
-- Use transactions for database operations
-
-### Insert vs Update Tracking
-
-- Use `RETURNING created_at, updated_at` in upsert queries
-- Compare timestamps to distinguish inserts from updates:
-  ```typescript
-  if (createdAt === updatedAt) {
-    insertedCount++;
-  } else {
-    updatedCount++;
-  }
-  ```
-
-## Code Organization
-
-### File Structure
-
-- **Utility functions MUST go in the `lib` folder**, not in service files
-- Group related functionality (e.g., all USA indicators in `services/usa/index.ts`)
-- Use clear section comments with separators:
-  ```typescript
-  // ==========================================
-  // 1. Production & Consumption Indicators
-  // ==========================================
-  ```
-
-### Helper Functions
-
-- Place all utility functions in `src/lib/` directory
-- Examples: `lib/utils.ts` for general utilities, `lib/time.ts` for date/time functions
-- Import utilities from lib: `import { getYearQuarter, convertToBillions } from "../../lib/utils"`
-- Use descriptive names: `convertToBillions`, `getYearQuarter`
-- Keep helpers focused and reusable
-- Add JSDoc comments for utility functions
-
-### Async/Await
-
-- Always use async/await over promises
-- Handle errors with try/catch blocks
-- Use transactions for multi-step database operations
-
-## Data Fetching Patterns
-
-### Standard Template
-
-```typescript
-export const updateIndicator = async () => {
-  await fetchAndSave(INDICATOR_TYPE.EXAMPLE, async () => {
-    return getDataFRED({
-      seriesId: "SERIES_ID",
-      country: COUNTRY_CODE.USA,
-      indicatorType: INDICATOR_TYPE.EXAMPLE,
-      frequency: FREQUENCY.MONTHLY,
-      unit: UNIT.BILLIONS,
-      currency: Currency.USD, // Optional, only for monetary data
-    });
-  });
-};
-```
-
-### Required Fields
-
-- Always specify `unit` for new indicators
-- Add `currency` for all monetary values
-- Use appropriate `frequency` (DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY)
-
-## Comments
-
-### When to Comment
-
-- Complex calculations or business logic
-- Unit conversions and their rationale
-- Data source information (FRED series IDs, etc.)
-- TODO items for missing implementations
-
-### Comment Style
-
-```typescript
-// Single line for brief explanations
-// Longer explanations can span
-// multiple comment lines
-
-/**
- * SQL Schema for reference:
- *
- * CREATE TABLE IF NOT EXISTS indicators (
- *   ...
- * );
- */
-```
-
-## Testing and Verification
-
-### Console Logging
-
-- Log record counts for transparency
-- Log both inserted and updated counts separately
-- Include service name in brackets for easy filtering
-
-### Data Quality
-
-- Validate timestamp alignment for derived indicators
-- Check for zero division before calculations
-- Handle missing or null data gracefully
+- ✅ **Code Consistency** - Same patterns across all services
+- ✅ **No Duplication** - Reusable utilities in proper locations
+- ✅ **Clear Boundaries** - Proper separation between lib/, common/, and services/
+- ✅ **Type Safety** - Strict enum usage and type casting
+- ✅ **Maintainability** - Easy to understand, modify, and extend
+- ✅ **Scalability** - Easy to add new countries and indicators

@@ -1,4 +1,3 @@
-import axios from "axios";
 import xlsx from "xlsx";
 import { getDateNowString, excelTimestampToUnix } from "../../lib/time";
 import { COUNTRY_CODE, INDICATOR_TYPE, FREQUENCY, UNIT, IndicatorValue } from "../../types";
@@ -94,7 +93,7 @@ async function readExcelFileRBA(data: Buffer, metadata: IRBAData): Promise<Indic
             unit,
             timestamp: excelTimestampToUnix(rawDate),
             actual: Number(numericValue.toFixed(1)),
-            actual_formatted: numberFormatter(numericValue, {decimals: 1}),
+            actual_formatted: numberFormatter(numericValue, { decimals: 1 }),
           });
         }
       }
