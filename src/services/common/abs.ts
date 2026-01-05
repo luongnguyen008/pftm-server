@@ -1,8 +1,16 @@
 import xlsx from "xlsx";
 import dayjs from "dayjs";
+import pc from "picocolors";
 import { downloadExcelFile } from "../../lib/excel";
 import { excelTimestampToUnix, formatMonthyear } from "../../lib/time";
-import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, IndicatorValue, UNIT } from "../../types";
+import {
+  COUNTRY_CODE,
+  Currency,
+  FREQUENCY,
+  INDICATOR_TYPE,
+  IndicatorValue,
+  UNIT,
+} from "../../types";
 import { numberFormatter } from "../../lib/number-formatter";
 
 interface TargetSeries {
@@ -12,7 +20,8 @@ interface TargetSeries {
   frequency: FREQUENCY;
   country: COUNTRY_CODE;
   indicatorType: INDICATOR_TYPE;
-  unit: UNIT;
+  unit?: UNIT;
+  currency?: Currency;
 }
 
 export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorValue[]> => {
@@ -20,7 +29,6 @@ export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorV
     const excelData = await findExcelFileABS(
       targetSeries.pathName,
       targetSeries.fileName,
-      targetSeries.frequency
     );
     if (!excelData) return [];
 
@@ -37,28 +45,18 @@ export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorV
  */
 async function findExcelFileABS(
   filePath: string,
-  excelFileName: string,
-  frequency: string
+  excelFileName: string
 ): Promise<Buffer | null> {
-  const baseUrl = "https://www.abs.gov.au/statistics/";
+  const baseUrl = "https://www.abs.gov.au/statistics";
   let currentDate = dayjs();
 
   for (let i = 0; i < 12; i++) {
-    // For quarterly data, only check months that typically have releases (Mar, Jun, Sep, Dec)
-    if (
-      frequency === "quarterly" &&
-      ![2, 5, 8, 11].includes(currentDate.month()) // 0-indexed: 2=Mar, 5=Jun, 8=Sep, 11=Dec
-    ) {
-      currentDate = currentDate.subtract(1, "month");
-      continue;
-    }
-
-    const formattedDate = formatMonthyear(currentDate, frequency);
-    const fileUrl = `${baseUrl}${filePath}${formattedDate}/${excelFileName}`;
+    const formattedDate = formatMonthyear(currentDate);
+    const fileUrl = `${baseUrl}/${filePath}/${formattedDate}/${excelFileName}`;
 
     const fileData = await downloadExcelFile(fileUrl);
     if (fileData) {
-      console.log(`Successfully downloaded file for ${formattedDate} from ${fileUrl}`);
+      console.log(pc.green(`Successfully downloaded file for ${formattedDate} from ${fileUrl}`));
       return fileData;
     }
 
@@ -113,8 +111,6 @@ async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<I
         break;
       }
     }
-    console.log("seriesIdRow", seriesIdRow);
-    console.log("dataStartIndex", dataStartIndex);
 
     if (!seriesIdRow) {
       console.warn(`[ABS] Series ID ${seriesId} header row not found`);

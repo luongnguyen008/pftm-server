@@ -16,7 +16,7 @@ import {
 } from "./government";
 import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./inflation";
 import { updateInterestRate } from "./interest-rates";
-import { updateMoneySupplyM2 } from "./money-supply";
+import { updateMoneySupplyM3Change } from "./money-supply";
 import {
   updateBuildingPermits,
   updateConsumerSentiment,
@@ -38,7 +38,7 @@ export const updateAllAustraliaIndicators = async () => {
   await updateBuildingPermits();
 
   // 2. Money Supply
-  await updateMoneySupplyM2();
+  await updateMoneySupplyM3Change();
 
   // 3. Interest Rate
   await updateInterestRate();

@@ -1,6 +1,13 @@
 import xlsx from "xlsx";
 import { getDateNowString, excelTimestampToUnix } from "../../lib/time";
-import { COUNTRY_CODE, INDICATOR_TYPE, FREQUENCY, UNIT, IndicatorValue } from "../../types";
+import {
+  COUNTRY_CODE,
+  INDICATOR_TYPE,
+  FREQUENCY,
+  UNIT,
+  IndicatorValue,
+  Currency,
+} from "../../types";
 import { numberFormatter } from "../../lib/number-formatter";
 import { downloadExcelFile } from "../../lib/excel";
 
@@ -10,7 +17,8 @@ interface IRBAData {
   country: COUNTRY_CODE;
   indicatorType: INDICATOR_TYPE;
   frequency: FREQUENCY;
-  unit: UNIT;
+  unit?: UNIT;
+  currency?: Currency;
 }
 
 export const fetchRBAData = async (data: IRBAData): Promise<IndicatorValue[]> => {

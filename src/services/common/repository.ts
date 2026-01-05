@@ -1,4 +1,5 @@
 import { db } from "../../lib/db";
+import pc from "picocolors";
 import {
   Currency,
   INDICATOR_TYPE,
@@ -98,7 +99,9 @@ export const upsertIndicators = async (data: IndicatorValue[]) => {
 
     await transaction.commit();
     console.log(
-      `Successfully processed ${data.length} records. (Inserted: ${insertedCount}, Updated: ${updatedCount})`
+      pc.green(
+        `Successfully processed ${data.length} records. (Inserted: ${insertedCount}, Updated: ${updatedCount})`
+      )
     );
   } catch (error) {
     transaction.rollback();

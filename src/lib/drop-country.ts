@@ -1,4 +1,5 @@
 import { deleteByCountry } from "../services/common/repository";
+import pc from "picocolors";
 
 const main = async () => {
   const country = process.argv[2];
@@ -12,7 +13,7 @@ const main = async () => {
 
   try {
     const deletedCount = await deleteByCountry(country);
-    console.log(`[DROP-COUNTRY] Successfully deleted ${deletedCount} records.`);
+    console.log(pc.green(`[DROP-COUNTRY] Successfully deleted ${deletedCount} records.`));
     process.exit(0);
   } catch (error) {
     console.error("[DROP-COUNTRY] Failed to drop country data:", error);

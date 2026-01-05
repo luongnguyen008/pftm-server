@@ -1,9 +1,44 @@
+import { fetchAndSave } from "../common/helper";
+import { INDICATOR_TYPE, COUNTRY_CODE, FREQUENCY, UNIT, Currency } from "../../types";
+import { getDataABS } from "../common/abs";
+
 export const updateGDPNominal = async () => {
-  // TODO: Implement
+  await fetchAndSave({
+    indicatorType: INDICATOR_TYPE.GDP_NOMINAL,
+    country: COUNTRY_CODE.AUSTRALIA,
+    fetchLogic: async () => {
+      return getDataABS({
+        pathName:
+          "economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product",
+        fileName: "5206001_Key_Aggregates.xlsx",
+        seriesId: "A2304418T",
+        country: COUNTRY_CODE.AUSTRALIA,
+        indicatorType: INDICATOR_TYPE.GDP_NOMINAL,
+        frequency: FREQUENCY.QUARTERLY,
+        unit: UNIT.MILLIONS,
+        currency: Currency.AUD,
+      });
+    },
+  });
 };
 
 export const updateGDPGrowth = async () => {
-  // TODO: Implement
+  await fetchAndSave({
+    indicatorType: INDICATOR_TYPE.GDP_GROWTH,
+    country: COUNTRY_CODE.AUSTRALIA,
+    fetchLogic: async () => {
+      return getDataABS({
+        pathName:
+          "economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product",
+        fileName: "5206001_Key_Aggregates.xlsx",
+        seriesId: "A2304370T",
+        country: COUNTRY_CODE.AUSTRALIA,
+        indicatorType: INDICATOR_TYPE.GDP_GROWTH,
+        frequency: FREQUENCY.QUARTERLY,
+        unit: UNIT.PERCENT,
+      });
+    },
+  });
 };
 
 export const updateGovernmentDebt = async () => {

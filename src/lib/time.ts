@@ -80,13 +80,9 @@ export function getDateNowString() {
  * @param frequency Frequency of the data (optional)
  * @returns Formatted date string in "mmm-yyyy" format
  */
-export const formatMonthyear = (date: DateType, frequency?: string): string => {
+export const formatMonthyear = (date: DateType): string => {
   const d = dayjs(date);
   if (!d.isValid()) return "";
-
-  if (frequency === FREQUENCY.QUARTERLY) {
-    return `${d.format("MMM")}-quarter-${d.year()}`.toLowerCase();
-  }
 
   return d.format("MMM-YYYY").toLowerCase();
 };
