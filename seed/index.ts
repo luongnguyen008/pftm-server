@@ -15,7 +15,7 @@ async function createTable() {
       currency TEXT,
       created_at INTEGER DEFAULT (unixepoch()),
       updated_at INTEGER DEFAULT (unixepoch()),
-      PRIMARY KEY (country, indicator_type, timestamp, frequency)
+      PRIMARY KEY (country, indicator_type, timestamp, frequency, actual)
     );
   `);
   await db.execute(`

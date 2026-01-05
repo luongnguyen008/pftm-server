@@ -1,15 +1,15 @@
 export const updateCPI = async () => {
-    // TODO: Implement
+  // TODO: Implement
 };
 
 export const updateCoreCPI = async () => {
-    // TODO: Implement
+  // TODO: Implement
 };
 
 export const updatePPI = async () => {
-    // TODO: Implement
+  // TODO: Implement
 };
 
 export const updateCorePPI = async () => {
-    // TODO: Implement
+  // TODO: Implement
 };

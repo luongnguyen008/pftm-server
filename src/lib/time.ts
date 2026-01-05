@@ -1,12 +1,13 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import utc from "dayjs/plugin/utc";
+import { FREQUENCY } from "../types";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
 
 // convert time to timestamp in seconds
-export type DateType = Date | string | number;
+export type DateType = Date | string | number | dayjs.Dayjs;
 
 export const toTimestamp = (time: DateType, format?: string) => {
   if (!time) return 0;
@@ -49,4 +50,43 @@ export const getYearQuarter = (timestamp: number): string => {
 export const getYear = (timestamp: number): number => {
   const date = dayjs.unix(timestamp);
   return date.year();
+};
+
+/**
+ * Convert Excel serial date to Unix timestamp (seconds)
+ * Excel dates start from 1899-12-30
+ * @param excelDate Excel serial date number
+ * @returns Unix timestamp in seconds
+ */
+export const excelTimestampToUnix = (excelDate: number): number => {
+  // Excel's base date is December 30, 1899
+  // 25569 is the number of days between 1899-12-30 and 1970-01-01
+  const daysSinceEpoch = excelDate - 25569;
+  const secondsInDay = 86400;
+  return Math.floor(daysSinceEpoch * secondsInDay);
+};
+
+/**
+ * Get current date in format YYYY-MM-DD-HH-MM-SS
+ * @returns String in format "YYYY-MM-DD-HH-MM-SS" (e.g., "2024-01-01-00-00-00")
+ */
+export function getDateNowString() {
+  return dayjs().format("YYYY-MM-DD-HH-MM-SS");
+}
+
+/**
+ * Format date for ABS statistics URL (e.g., "sep-2024")
+ * @param date Date object, dayjs object, or timestamp
+ * @param frequency Frequency of the data (optional)
+ * @returns Formatted date string in "mmm-yyyy" format
+ */
+export const formatMonthyear = (date: DateType, frequency?: string): string => {
+  const d = dayjs(date);
+  if (!d.isValid()) return "";
+
+  if (frequency === FREQUENCY.QUARTERLY) {
+    return `${d.format("MMM")}-quarter-${d.year()}`.toLowerCase();
+  }
+
+  return d.format("MMM-YYYY").toLowerCase();
 };

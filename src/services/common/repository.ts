@@ -68,7 +68,7 @@ export const upsertIndicators = async (data: IndicatorValue[]) => {
           actual, actual_formatted, forecast, forecast_formatted,
           unit, currency
         ) VALUES ${placeholders}
-        ON CONFLICT(country, indicator_type, frequency, timestamp) 
+        ON CONFLICT(country, indicator_type, frequency, timestamp, actual) 
         DO UPDATE SET 
           actual = excluded.actual,
           actual_formatted = excluded.actual_formatted,
@@ -135,5 +135,19 @@ export const getIndicatorsByType = async ({
   } catch (error) {
     console.error("Error getting indicators:", error);
     return [];
+  }
+};
+
+export const deleteByCountry = async (country: string) => {
+  try {
+    const result = await db.execute({
+      sql: `DELETE FROM indicators WHERE country = ?`,
+      args: [country],
+    });
+    console.log(`[REPOSITORY] Deleted ${result.rowsAffected} records for country: ${country}`);
+    return result.rowsAffected;
+  } catch (error) {
+    console.error(`[REPOSITORY] Error deleting records for country ${country}:`, error);
+    throw error;
   }
 };

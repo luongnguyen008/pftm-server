@@ -11,11 +11,13 @@
     "seed": "tsx seed/index.ts",
     "start": "tsx src/index.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "drop-country": "tsx src/lib/drop-country.ts"
   },
   "author": "",
   "dependencies": {
     "@libsql/client": "^0.15.15",
+    "axios": "^1.13.2",
     "cheerio": "^1.1.2",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
