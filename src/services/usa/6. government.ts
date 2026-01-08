@@ -459,18 +459,3 @@ export const updateLiquidityCover = async () => {
   });
 };
 
-export const updateTreasuryYield10Y = async () => {
-  await fetchAndSave({
-    indicatorType: INDICATOR_TYPE.TREASURY_10_YEAR,
-    country: COUNTRY_CODE.USA,
-    fetchLogic: async () => {
-      return getDataFRED({
-        seriesId: "WGS10YR",
-        country: COUNTRY_CODE.USA,
-        indicatorType: INDICATOR_TYPE.TREASURY_10_YEAR,
-        frequency: FREQUENCY.WEEKLY,
-        unit: UNIT.PERCENT,
-      });
-    },
-  });
-};

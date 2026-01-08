@@ -11,6 +11,8 @@
  * Custom error class for HTTP client errors (4xx)
  * These errors should NOT be retried
  */
+import pc from "picocolors";
+
 class HttpClientError extends Error {
   constructor(
     public status: number,
@@ -95,7 +97,7 @@ export const fetchWithRetry = async (
 
       // If it's an HTTP client error (4xx), don't retry - fail immediately
       if (error instanceof HttpClientError) {
-        console.error(`[RETRY] Client error (${error.status}), not retrying: ${error.message}`);
+        console.error(pc.yellowBright(`[RETRY] Client error (${error.status}), not retrying: ${error.message}`));
         throw error;
       }
 

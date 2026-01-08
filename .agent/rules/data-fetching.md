@@ -187,3 +187,38 @@ export const updateDerivedIndicator = async () => {
 - Always specify `unit` for new indicators
 - Add `currency` for all monetary values
 - Use appropriate `frequency` (DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY)
+
+## Caching Patterns
+
+### InMemoryCache (Preferred)
+
+- **REQUIRED**: Use InMemoryCache from lib/cache.ts for temporary data that doesn't need persistence (e.g., downloaded files, API responses in a single run).
+- Always specify a reasonable TTL (Time To Live).
+- Pattern:
+
+  ```typescript
+  import { InMemoryCache } from "../../lib/cache";
+
+  const dataCache = new InMemoryCache<DataType>();
+  const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+  const getData = async (key: string) => {
+    const cached = dataCache.get(key);
+    if (cached) return cached;
+
+    const data = await fetchData();
+    dataCache.set(key, data, CACHE_TTL);
+    return data;
+  };
+  ```
+
+
+### PersistentDictionaryCache
+
+- Use for data that should persist across different runs (stored in .cache/ directory).
+- Ideal for small to medium settings or mappings where multiple keys should live in a single file.
+
+### Global Caches
+
+- **excelLinkCache**: Pre-configured global cache for Excel links. Consolidates all persistent links into `.cache/excel-link.json`.
+- Use this to store discovered URLs (e.g., ABS, PBO) to avoid redundant search loops across server restarts.

@@ -1,0 +1,38 @@
+{
+  "abs:link:industry/building-and-construction/building-approvals-australia:8731006.xlsx": {
+    "data": "https://www.abs.gov.au/statistics/industry/building-and-construction/building-approvals-australia/nov-2025/8731006.xlsx",
+    "expires": 1767927369492
+  },
+  "abs:release:industry/building-and-construction/building-approvals-australia": {
+    "data": "nov-2025",
+    "expires": 1767927369492
+  },
+  "abs:link:economy/price-indexes-and-inflation/producer-price-indexes-australia:642701.xlsx": {
+    "data": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/producer-price-indexes-australia/sep-2025/642701.xlsx",
+    "expires": 1767927378941
+  },
+  "abs:release:economy/price-indexes-and-inflation/producer-price-indexes-australia": {
+    "data": "sep-2025",
+    "expires": 1767927378942
+  },
+  "abs:link:labour/employment-and-unemployment/labour-force-australia:6202001.xlsx": {
+    "data": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/nov-2025/6202001.xlsx",
+    "expires": 1767927381819
+  },
+  "abs:release:labour/employment-and-unemployment/labour-force-australia": {
+    "data": "nov-2025",
+    "expires": 1767927381819
+  },
+  "abs:link:economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product:5206001_Key_Aggregates.xlsx": {
+    "data": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/sep-2025/5206001_Key_Aggregates.xlsx",
+    "expires": 1767927387524
+  },
+  "abs:release:economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product": {
+    "data": "sep-2025",
+    "expires": 1767927387525
+  },
+  "pbo:latest": {
+    "data": "https://www.pbo.gov.au/sites/default/files/2025-12/2025-26%20MYEFO%20Historical%20Fiscal%20Data.xlsx",
+    "expires": 1767927392866
+  }
+}

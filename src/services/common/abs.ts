@@ -12,6 +12,10 @@ import {
   UNIT,
 } from "../../types";
 import { numberFormatter } from "../../lib/number-formatter";
+import { InMemoryCache, excelLinkCache } from "../../lib/cache";
+
+const absUrlCache = new InMemoryCache<Buffer>();
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hour
 
 interface TargetSeries {
   pathName: string;
@@ -26,10 +30,7 @@ interface TargetSeries {
 
 export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorValue[]> => {
   try {
-    const excelData = await findExcelFileABS(
-      targetSeries.pathName,
-      targetSeries.fileName,
-    );
+    const excelData = await findExcelFileABS(targetSeries.pathName, targetSeries.fileName);
     if (!excelData) return [];
 
     const result = await readExcelFileABS(excelData, targetSeries);
@@ -43,20 +44,75 @@ export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorV
 /**
  * Function to find the Excel file by iterating backwards through months
  */
-async function findExcelFileABS(
-  filePath: string,
-  excelFileName: string
-): Promise<Buffer | null> {
+async function findExcelFileABS(filePath: string, excelFileName: string): Promise<Buffer | null> {
+  const cacheKey = `${filePath}:${excelFileName}`;
   const baseUrl = "https://www.abs.gov.au/statistics";
+
+  // 1. Try persistent cached link first (saves everything)
+  const cachedUrl = excelLinkCache.get(`abs:link:${cacheKey}`);
+  if (cachedUrl) {
+    const cachedBuffer = absUrlCache.get(cachedUrl);
+    if (cachedBuffer) {
+      console.log(pc.cyan(`[ABS] Using in-memory cached file for ${cachedUrl}`));
+      return cachedBuffer;
+    }
+
+    const fileData = await downloadExcelFile(cachedUrl);
+    if (fileData) {
+      console.log(pc.cyan(`[ABS] Using persistent cached link for ${cacheKey}: ${cachedUrl}`));
+      absUrlCache.set(cachedUrl, fileData, CACHE_TTL);
+      return fileData;
+    }
+    // If cached link fails, remove it and proceed
+    excelLinkCache.clear(`abs:link:${cacheKey}`);
+  }
+
+  // 2. Try the latest working 'release month' discovered for this filePath topic (saves discovery loop)
+  const latestReleaseMonth = excelLinkCache.get(`abs:release:${filePath}`);
+  if (latestReleaseMonth) {
+    const trialUrl = `${baseUrl}/${filePath}/${latestReleaseMonth}/${excelFileName}`;
+    const fileData = await downloadExcelFile(trialUrl);
+    if (fileData) {
+      console.log(pc.cyan(`[ABS] Found file in latest release month (${latestReleaseMonth}) for ${filePath}`));
+      absUrlCache.set(trialUrl, fileData, CACHE_TTL);
+      
+      // Update link cache
+      excelLinkCache.set(`abs:link:${cacheKey}`, trialUrl, CACHE_TTL);
+      
+      return fileData;
+    }
+  }
+
+  // 3. Fallback to 12-month search loop
   let currentDate = dayjs();
 
   for (let i = 0; i < 12; i++) {
     const formattedDate = formatMonthyear(currentDate);
     const fileUrl = `${baseUrl}/${filePath}/${formattedDate}/${excelFileName}`;
 
+    // Check if we've already tried this exact URL in this session
+    if (absUrlCache.has(fileUrl)) {
+      const cached = absUrlCache.get(fileUrl);
+      if (cached) {
+        console.log(pc.cyan(`[ABS] Using cached file for ${fileUrl}`));
+        return cached;
+      }
+      currentDate = currentDate.subtract(1, "month");
+      continue;
+    }
+
     const fileData = await downloadExcelFile(fileUrl);
+
+    // Cache the result in memory (Buffer or null)
+    absUrlCache.set(fileUrl, fileData as Buffer, CACHE_TTL);
+
     if (fileData) {
       console.log(pc.green(`Successfully downloaded file for ${formattedDate} from ${fileUrl}`));
+      
+      // Update persistent caches in the shared file
+      excelLinkCache.set(`abs:link:${cacheKey}`, fileUrl, CACHE_TTL);
+      excelLinkCache.set(`abs:release:${filePath}`, formattedDate, CACHE_TTL);
+
       return fileData;
     }
 

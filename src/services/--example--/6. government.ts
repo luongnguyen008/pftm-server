@@ -42,6 +42,3 @@ export const updateLiquidityCover = async () => {
   // TODO: Implement
 };
 
-export const updateTreasuryYield10Y = async () => {
-  // TODO: Implement
-};

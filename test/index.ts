@@ -1,18 +1,11 @@
-import { getHistoricalRates } from "dukascopy-node";
+import { updateAllAustraliaIndicators } from "../src/services/australia/index";
 
 (async () => {
   try {
-    const data = await getHistoricalRates({
-      instrument: "eurusd",
-      dates: {
-        from: new Date("2021-03-30"),
-        to: new Date("2021-03-31"),
-      },
-      timeframe: "tick",
-    });
-
-    console.log(data);
+    await updateAllAustraliaIndicators();
   } catch (error) {
-    console.log("error", error);
+    console.error("Test failed:", error);
   }
 })();
+
+

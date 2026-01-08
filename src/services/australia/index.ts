@@ -1,28 +1,25 @@
-import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./cbbs";
-import { updateEmploymentChange, updateUnemploymentRate } from "./employment";
+import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./8. cbbs";
+import { updateEmploymentChange, updateUnemploymentRate } from "./5. employment";
 import {
   updateBudgetSurplusDeficit,
   updateDebtToGDP,
   updateGDPGrowth,
   updateGDPNominal,
-  updateGovernmentDebt,
-  updateGovernmentInterestBills,
-  updateGovernmentPayments,
-  updateGovernmentReceipts,
   updateInterestBillsToGDP,
   updateLiquidityCover,
+  updatePboAustraliaIndicators,
   updateSurplusDeficitToGDP,
-  updateTreasuryYield10Y,
-} from "./government";
-import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./inflation";
-import { updateInterestRate } from "./interest-rates";
-import { updateMoneySupplyM3Change } from "./money-supply";
+} from "./6. government";
+import { updateTreasuryYield10Y } from "./7. treasury-yield";
+import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./4. inflation";
+import { updateInterestRate } from "./3. interest-rates";
+import { updateMoneySupplyM3Change } from "./2. money-supply";
 import {
   updateBuildingPermits,
   updateConsumerSentiment,
   updateManufacturingPMI,
   updateServicesPMI,
-} from "./surveys";
+} from "./1. surveys";
 
 // ==========================================
 // MASTER RUNNER
@@ -32,8 +29,8 @@ export const updateAllAustraliaIndicators = async () => {
   console.log("Starting update for all Australia indicators...");
 
   // 1. Production & Consumption
-  // await updateManufacturingPMI();
-  // await updateServicesPMI();
+  await updateManufacturingPMI();
+  await updateServicesPMI();
   await updateConsumerSentiment();
   await updateBuildingPermits();
 
@@ -56,10 +53,9 @@ export const updateAllAustraliaIndicators = async () => {
   // 6. GDP & Govt
   await updateGDPNominal();
   await updateGDPGrowth();
-  await updateGovernmentDebt();
-  await updateGovernmentReceipts();
-  await updateGovernmentPayments();
-  await updateGovernmentInterestBills();
+
+  await updatePboAustraliaIndicators(); // Get Debt / Receipts / Payments / Interest Bills from PBO
+  
   await updateDebtToGDP();
   await updateBudgetSurplusDeficit();
   await updateSurplusDeficitToGDP();

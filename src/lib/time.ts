@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import utc from "dayjs/plugin/utc";
-import { FREQUENCY } from "../types";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -27,7 +26,7 @@ export const toTimestamp = (time: DateType, format?: string) => {
     return 0;
   }
 
-  return date.unix(); // unix() returns timestamp in seconds
+  return date.utc().unix(); // unix() returns timestamp in seconds
 };
 
 /**
@@ -36,7 +35,7 @@ export const toTimestamp = (time: DateType, format?: string) => {
  * @returns String in format "YYYY-Q#" (e.g., "2024-Q1")
  */
 export const getYearQuarter = (timestamp: number): string => {
-  const date = dayjs.unix(timestamp);
+  const date = dayjs.unix(timestamp).utc();
   const month = date.month(); // 0-11
   const quarter = Math.floor(month / 3) + 1;
   return `${date.year()}-Q${quarter}`;
@@ -48,7 +47,7 @@ export const getYearQuarter = (timestamp: number): string => {
  * @returns Year as number
  */
 export const getYear = (timestamp: number): number => {
-  const date = dayjs.unix(timestamp);
+  const date = dayjs.unix(timestamp).utc();
   return date.year();
 };
 
@@ -85,4 +84,27 @@ export const formatMonthyear = (date: DateType): string => {
   if (!d.isValid()) return "";
 
   return d.format("MMM-YYYY").toLowerCase();
+};
+
+/**
+ * Convert fiscal year string (e.g., "2024-25") to Unix timestamp (seconds)
+ * Represents December 31st of the second year (e.g., "2024-25" -> 2025-12-31)
+ * @param fiscalYear String in format "YYYY-YY" or "YYYY"
+ * @returns Unix timestamp in seconds
+ */
+export const fiscalYearToTimestamp = (fiscalYear: string): number => {
+  if (!fiscalYear) return 0;
+
+  // Extract the starting year (first 4 digits)
+  const match = fiscalYear.match(/^(\d{4})/);
+  if (!match) {
+    console.warn(`Invalid fiscal year format: ${fiscalYear}`);
+    return 0;
+  }
+
+  const startYear = parseInt(match[1], 10);
+  const targetYear = startYear + 1;
+
+  // Create date for December 31st of the second year in UTC
+  return dayjs.utc(`${targetYear}-12-31T23:59:59Z`).unix();
 };
