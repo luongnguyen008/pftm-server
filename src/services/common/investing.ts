@@ -10,6 +10,7 @@ import {
 } from "../../types";
 import { toTimestamp } from "../../lib/time";
 import { fetchWithRetry } from "../../lib/api-client";
+import { logger } from "../../lib/logger";
 
 export const fetchInvestingData = async ({
   url,
@@ -32,7 +33,7 @@ export const fetchInvestingData = async ({
 
     // Validate response structure
     if (!json || !json.attr || !Array.isArray(json.attr)) {
-      console.warn(`[${country}] Invalid data format for ${indicatorType} from ${url}`);
+      logger.warn(`Invalid data format for ${indicatorType} from ${url}`, country);
       return [];
     }
 
@@ -51,7 +52,7 @@ export const fetchInvestingData = async ({
       };
     });
   } catch (error) {
-    console.error(`[${country}] Error fetching ${indicatorType} from investing:`, error);
+    logger.error(`Error fetching ${indicatorType} from investing`, error, country);
     return [];
   }
 };

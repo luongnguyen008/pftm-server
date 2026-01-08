@@ -11,7 +11,7 @@
  * Custom error class for HTTP client errors (4xx)
  * These errors should NOT be retried
  */
-import pc from "picocolors";
+import { logger } from "./logger";
 
 class HttpClientError extends Error {
   constructor(
@@ -63,7 +63,7 @@ export const fetchWithRetry = async (
       // Success - return immediately
       if (response.ok) {
         if (attempt > 0) {
-          console.log(`[RETRY] Success after ${attempt} retries for ${url}`);
+          logger.info(`Success after ${attempt} retries for ${url}`, "RETRY");
         }
         return response;
       }
@@ -71,8 +71,9 @@ export const fetchWithRetry = async (
       // Rate limited - use exponential backoff
       if (response.status === 429) {
         const delay = initialDelayMs * Math.pow(2, attempt);
-        console.warn(
-          `[RETRY] Rate limited (429), waiting ${delay}ms before retry ${attempt + 1}/${maxRetries}`
+        logger.warn(
+          `Rate limited (429), waiting ${delay}ms before retry ${attempt + 1}/${maxRetries}`,
+          "RETRY"
         );
         await sleep(delay);
         continue;
@@ -81,10 +82,11 @@ export const fetchWithRetry = async (
       // Server error (5xx) - retry with backoff
       if (response.status >= 500) {
         const delay = initialDelayMs * Math.pow(2, attempt);
-        console.warn(
-          `[RETRY] Server error (${response.status}), waiting ${delay}ms before retry ${
+        logger.warn(
+          `Server error (${response.status}), waiting ${delay}ms before retry ${
             attempt + 1
-          }/${maxRetries}`
+          }/${maxRetries}`,
+          "RETRY"
         );
         await sleep(delay);
         continue;
@@ -97,7 +99,7 @@ export const fetchWithRetry = async (
 
       // If it's an HTTP client error (4xx), don't retry - fail immediately
       if (error instanceof HttpClientError) {
-        console.error(pc.yellowBright(`[RETRY] Client error (${error.status}), not retrying: ${error.message}`));
+        logger.error(`Client error (${error.status}), not retrying: ${error.message}`, null, "RETRY");
         throw error;
       }
 
@@ -108,15 +110,17 @@ export const fetchWithRetry = async (
 
       // Network error or other transient error - retry with delay
       const delay = initialDelayMs * Math.pow(2, attempt);
-      console.warn(
-        `[RETRY] Network error, waiting ${delay}ms before retry ${attempt + 1}/${maxRetries}:`,
-        error instanceof Error ? error.message : String(error)
+      logger.warn(
+        `Network error, waiting ${delay}ms before retry ${attempt + 1}/${maxRetries}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+        "RETRY"
       );
       await sleep(delay);
     }
   }
 
   // All retries exhausted
-  console.error(`[RETRY] Failed after ${maxRetries} attempts for ${url}`);
+  logger.error(`Failed after ${maxRetries} attempts for ${url}`, null, "RETRY");
   throw lastError || new Error("All retry attempts failed");
 };

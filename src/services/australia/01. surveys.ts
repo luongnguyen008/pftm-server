@@ -14,7 +14,7 @@ export const updateManufacturingPMIAustralia = async () => {
         country: COUNTRY_CODE.AUSTRALIA,
         indicatorType: INDICATOR_TYPE.PMI,
         frequency: FREQUENCY.MONTHLY,
-        unit: UNIT.POINTS,
+        unit: UNIT.INDEX,
       });
     },
   });
@@ -30,7 +30,7 @@ export const updateServicesPMIAustralia = async () => {
         country: COUNTRY_CODE.AUSTRALIA,
         indicatorType: INDICATOR_TYPE.SERVICE_PMI,
         frequency: FREQUENCY.MONTHLY,
-        unit: UNIT.POINTS,
+        unit: UNIT.INDEX,
       });
     },
   });

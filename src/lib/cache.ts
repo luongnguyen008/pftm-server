@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { logger } from "./logger";
 
 /**
  * In-memory caching layer to reduce database load and improve performance
@@ -136,7 +137,7 @@ export class PersistentDictionaryCache<T> {
       const content = fs.readFileSync(this.cacheFile, "utf-8");
       return JSON.parse(content);
     } catch (error) {
-      console.error(`[CACHE] Error reading dictionary cache ${this.cacheFile}:`, error);
+      logger.error(`Error reading dictionary cache ${this.cacheFile}`, error, "CACHE");
       return {};
     }
   }
@@ -145,7 +146,7 @@ export class PersistentDictionaryCache<T> {
     try {
       fs.writeFileSync(this.cacheFile, JSON.stringify(cache, null, 2));
     } catch (error) {
-      console.error(`[CACHE] Error writing dictionary cache ${this.cacheFile}:`, error);
+      logger.error(`Error writing dictionary cache ${this.cacheFile}`, error, "CACHE");
     }
   }
 

@@ -1,78 +1,55 @@
----
-trigger: always_on
----
-
 # Error Handling
 
-## Logging Format
+## Centralized Logger (REQUIRED)
 
-- Use consistent log format: `[SERVICE] Action description`
-- Examples:
-  ```typescript
-  console.log(`[USA] Fetching ${indicatorType}...`);
-  console.warn("No Government Debt data found.");
-  console.error("Error upserting indicators:", error);
-  ```
+- **REQUIRED**: All console output MUST use the centralized `logger` utility from `src/lib/logger.ts`.
+- **NEVER** use direct `console.log`, `console.warn`, or `console.error`.
 
-## Error Logging
+## Logging Patterns
 
-- Use `[SERVICE_NAME]` prefix in square brackets
-- Include context about what failed
-- Examples:
-  ```typescript
-  console.error("[USA] Error fetching PMI data:", error);
-  console.error("[AUSTRALIA] Error calculating debt ratio:", error);
-  console.error("[REPOSITORY] Error upserting indicators:", error);
-  ```
+### Informational and Service Messages
+Use `logger.info` for general progress or `logger.service` for specific service-level actions.
+
+```typescript
+import { logger } from "../../lib/logger";
+
+logger.info("Fetching indicators...", "USA");
+logger.service("ABS", "Downloading file...");
+```
+
+### Success and Results
+Use `logger.success` for successful completions and record counts.
+
+```typescript
+logger.success(`Saved ${indicators.length} records for ${indicatorType}`, "USA");
+```
+
+### Warnings and Errors
+Use `logger.warn` for non-critical issues and `logger.error` for failures.
+
+```typescript
+logger.warn("No data found for calculation", "USA");
+logger.error("Error fetching PMI data", error, "USA");
+```
 
 ## Try-Catch Patterns
 
 - Wrap all async operations in try-catch
-- **REQUIRED**: Always use consistent error logging format
+- **REQUIRED**: Always use consistent error logging via `logger.error`
 - Never swallow errors silently
-- Example:
-  ```typescript
-  try {
-    const data = await fetchData();
-    await processData(data);
-  } catch (error) {
-    console.error("[SERVICE_NAME] Error description:", error);
-    throw error; // Re-throw for caller to handle
-  }
-  ```
 
-## Data Validation
+```typescript
+try {
+  const data = await fetchData();
+  await processData(data);
+} catch (error) {
+  logger.error("Failed to process indicator data", error, "SERVICE_NAME");
+  throw error; // Re-throw for caller to handle
+}
+```
 
-- Check for empty datasets before processing
-- Return early with empty arrays when prerequisites aren't met
-- Use transactions for database operations
-
-## Graceful Degradation
-
-- Return empty arrays for missing data, don't throw
-- Log warnings for non-critical issues
-- Example:
-  ```typescript
-  if (sourceData.length === 0) {
-    console.warn("[USA] No data found for GDP calculation");
-    return; // Exit gracefully
-  }
-  ```
-
-## Async/Await
-
-- Always use async/await over promises
-- Handle errors with try/catch blocks
-- Use transactions for multi-step database operations
-
-## Data Quality
-
-- Validate timestamp alignment for derived indicators
-- Check for zero division before calculations
-- Handle missing or null data gracefully
-
-## Console Logging
+## Console Logging Standards
 
 - Log record counts for transparency
 - Log both inserted and updated counts separately
-- Include service name in brackets for easy filtering
+- Always specify the service name as the second or third argument to the logger method for consistent prefixing.

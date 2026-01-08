@@ -1,4 +1,5 @@
 import { fetchWithRetry } from "./api-client";
+import { logger } from "./logger";
 
 export const downloadExcelFile = async (url: string) => {
   try {
@@ -18,7 +19,7 @@ export const downloadExcelFile = async (url: string) => {
     const arrayBuffer = await response.arrayBuffer();
     return Buffer.from(arrayBuffer);
   } catch (error: any) {
-    console.error(`[RBA] Failed to download file from ${url}:`, error.message);
+    logger.error(`Failed to download file from ${url}`, error, "EXCEL");
     return null;
   }
 };

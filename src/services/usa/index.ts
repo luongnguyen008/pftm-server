@@ -6,7 +6,16 @@ import {
 } from "./01_surveys";
 import { updateMoneySupplyM2USA } from "./02_money-supply";
 import { updateInterestRateUSA } from "./03_interest-rates";
-import { updateCoreCPIUSA, updateCorePPIUSA, updateCPIUSA, updatePPIUSA } from "./04_inflation";
+import {
+  updateCoreCPIChangeUSA,
+  updateCoreCPIUSA,
+  updateCorePPIChangeUSA,
+  updateCorePPIUSA,
+  updateCPIChangeUSA,
+  updateCPIUSA,
+  updatePPIChangeUSA,
+  updatePPIUSA,
+} from "./04_inflation";
 import { updateEmploymentChangeUSA, updateUnemploymentRateUSA } from "./05_employment";
 import {
   updateBudgetSurplusDeficitUSA,
@@ -24,12 +33,14 @@ import {
 import { updateTreasuryYield10YUSA } from "./07_treasury-yield";
 import { updateCBBSTotalAssetsToGDPUSA, updateCentralBankBalanceSheetUSA } from "./08_cbbs";
 
+import { logger } from "../../lib/logger";
+
 // ==========================================
 // MASTER RUNNER
 // ==========================================
 
 export const updateAllUSAIndicators = async () => {
-  console.log("Starting update for all USA indicators...");
+  logger.info("Starting update for all USA indicators...", "USA");
 
   // 1. Production & Consumption
   await updateManufacturingPMIUSA();
@@ -48,6 +59,12 @@ export const updateAllUSAIndicators = async () => {
   await updateCoreCPIUSA();
   await updatePPIUSA();
   await updateCorePPIUSA();
+
+  // 4.1. Inflation Changes (Derived)
+  await updateCPIChangeUSA();
+  await updateCoreCPIChangeUSA();
+  await updatePPIChangeUSA();
+  await updateCorePPIChangeUSA();
 
   // 5. Labor
   await updateEmploymentChangeUSA();
@@ -73,5 +90,5 @@ export const updateAllUSAIndicators = async () => {
   await updateCentralBankBalanceSheetUSA();
   await updateCBBSTotalAssetsToGDPUSA();
 
-  console.log("Completed update for all USA indicators.");
+  logger.info("Completed update for all USA indicators.", "USA");
 };

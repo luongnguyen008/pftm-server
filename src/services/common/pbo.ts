@@ -3,6 +3,7 @@ import * as xlsx from "xlsx";
 import { PuppeteerClient } from "./puppeteer-client";
 import { excelLinkCache } from "../../lib/cache";
 import { fiscalYearToTimestamp } from "../../lib/time";
+import { logger } from "../../lib/logger";
 
 const PBO_DATA_PORTAL_URL =
   "https://www.pbo.gov.au/publications-and-data/data-and-tools/data-portal/historical-fiscal-data";
@@ -16,7 +17,7 @@ export async function getLatestPboHistoricalFiscalDataLink(): Promise<string | n
   // Try to get from cache first
   const cachedLink = excelLinkCache.get(cacheKey);
   if (cachedLink) {
-    console.log(`[PBO] Using cached link: ${cachedLink}`);
+    logger.info(`Using cached link: ${cachedLink}`, "PBO");
     return cachedLink;
   }
 
@@ -26,14 +27,14 @@ export async function getLatestPboHistoricalFiscalDataLink(): Promise<string | n
     browser = await PuppeteerClient.launchBrowser();
     const page = await PuppeteerClient.createPage(browser);
 
-    console.log(`[PBO] Navigating to ${PBO_DATA_PORTAL_URL}...`);
+    logger.info(`Navigating to ${PBO_DATA_PORTAL_URL}...`, "PBO");
     await page.goto(PBO_DATA_PORTAL_URL, {
       waitUntil: "domcontentloaded",
       timeout: 60000,
     });
 
     // Wait for the table to be visible
-    console.log("[PBO] Waiting for data table...");
+    logger.info("Waiting for data table...", "PBO");
     await page.waitForSelector("table", { timeout: 30000 });
 
     // The latest data is usually in the first row of the table
@@ -52,18 +53,18 @@ export async function getLatestPboHistoricalFiscalDataLink(): Promise<string | n
     });
 
     if (!latestLink) {
-      console.warn("[PBO] Could not find any data links in the table.");
+      logger.warn("Could not find any data links in the table.", "PBO");
       return null;
     }
 
-    console.log(`[PBO] Found latest link: ${latestLink}`);
+    logger.info(`Found latest link: ${latestLink}`, "PBO");
 
     // Save to cache (24 hours TTL)
     excelLinkCache.set(cacheKey, latestLink);
 
     return latestLink;
   } catch (error) {
-    console.error("[PBO] Error getting latest historical fiscal data link:", error);
+    logger.error("Error getting latest historical fiscal data link", error, "PBO");
     return null;
   } finally {
     if (browser) {
@@ -85,7 +86,7 @@ export function extractIndicatorDataFromPboAus(
   indicatorLabel: string
 ) {
   if (!wb.SheetNames.includes(sheetName)) {
-    console.error(`[PBO] Sheet "${sheetName}" not found.`);
+    logger.error(`Sheet "${sheetName}" not found.`, null, "PBO");
     return null;
   }
 
@@ -107,7 +108,7 @@ export function extractIndicatorDataFromPboAus(
   });
 
   if (yearRowIndex === -1) {
-    console.error(`[PBO] [${sheetName}] Could not find year row.`);
+    logger.error(`[${sheetName}] Could not find year row.`, null, "PBO");
     return null;
   }
 
@@ -115,7 +116,7 @@ export function extractIndicatorDataFromPboAus(
   const indicatorRow = data.find((row) => row[0]?.toString().trim() === indicatorLabel);
 
   if (!indicatorRow) {
-    console.error(`[PBO] [${sheetName}] Could not find indicator: "${indicatorLabel}"`);
+    logger.error(`[${sheetName}] Could not find indicator: "${indicatorLabel}"`, null, "PBO");
     return null;
   }
 

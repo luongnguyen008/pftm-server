@@ -1,6 +1,5 @@
 import xlsx from "xlsx";
 import dayjs from "dayjs";
-import pc from "picocolors";
 import { downloadExcelFile } from "../../lib/excel";
 import { excelTimestampToUnix, formatMonthyear } from "../../lib/time";
 import {
@@ -13,6 +12,7 @@ import {
 } from "../../types";
 import { numberFormatter } from "../../lib/number-formatter";
 import { InMemoryCache, excelLinkCache } from "../../lib/cache";
+import { logger } from "../../lib/logger";
 
 const absUrlCache = new InMemoryCache<Buffer>();
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hour
@@ -36,7 +36,7 @@ export const getDataABS = async (targetSeries: TargetSeries): Promise<IndicatorV
     const result = await readExcelFileABS(excelData, targetSeries);
     return result || [];
   } catch (error) {
-    console.error("Error downloading or reading the Excel file:", error);
+    logger.error("Error downloading or reading the ABS Excel file", error, "ABS");
     return [];
   }
 };
@@ -53,13 +53,13 @@ async function findExcelFileABS(filePath: string, excelFileName: string): Promis
   if (cachedUrl) {
     const cachedBuffer = absUrlCache.get(cachedUrl);
     if (cachedBuffer) {
-      console.log(pc.cyan(`[ABS] Using in-memory cached file for ${cachedUrl}`));
+      logger.info(`Using in-memory cached file for ${cachedUrl}`, "ABS");
       return cachedBuffer;
     }
 
     const fileData = await downloadExcelFile(cachedUrl);
     if (fileData) {
-      console.log(pc.cyan(`[ABS] Using persistent cached link for ${cacheKey}: ${cachedUrl}`));
+      logger.info(`Using persistent cached link for ${cacheKey}: ${cachedUrl}`, "ABS");
       absUrlCache.set(cachedUrl, fileData, CACHE_TTL);
       return fileData;
     }
@@ -73,7 +73,7 @@ async function findExcelFileABS(filePath: string, excelFileName: string): Promis
     const trialUrl = `${baseUrl}/${filePath}/${latestReleaseMonth}/${excelFileName}`;
     const fileData = await downloadExcelFile(trialUrl);
     if (fileData) {
-      console.log(pc.cyan(`[ABS] Found file in latest release month (${latestReleaseMonth}) for ${filePath}`));
+      logger.info(`Found file in latest release month (${latestReleaseMonth}) for ${filePath}`, "ABS");
       absUrlCache.set(trialUrl, fileData, CACHE_TTL);
       
       // Update link cache
@@ -94,7 +94,7 @@ async function findExcelFileABS(filePath: string, excelFileName: string): Promis
     if (absUrlCache.has(fileUrl)) {
       const cached = absUrlCache.get(fileUrl);
       if (cached) {
-        console.log(pc.cyan(`[ABS] Using cached file for ${fileUrl}`));
+        logger.info(`Using cached file for ${fileUrl}`, "ABS");
         return cached;
       }
       currentDate = currentDate.subtract(1, "month");
@@ -107,7 +107,7 @@ async function findExcelFileABS(filePath: string, excelFileName: string): Promis
     absUrlCache.set(fileUrl, fileData as Buffer, CACHE_TTL);
 
     if (fileData) {
-      console.log(pc.green(`Successfully downloaded file for ${formattedDate} from ${fileUrl}`));
+      logger.success(`Successfully downloaded file for ${formattedDate} from ${fileUrl}`, "ABS");
       
       // Update persistent caches in the shared file
       excelLinkCache.set(`abs:link:${cacheKey}`, fileUrl, CACHE_TTL);
@@ -119,7 +119,7 @@ async function findExcelFileABS(filePath: string, excelFileName: string): Promis
     currentDate = currentDate.subtract(1, "month");
   }
 
-  console.log("No available files found for the specified months.");
+  logger.warn("No available ABS files found for the specified months.", "ABS");
   return null;
 }
 
@@ -137,7 +137,7 @@ async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<I
     // Get the second sheet (usually Data1 in ABS files)
     const secondSheetName = workbook.SheetNames[1];
     if (!secondSheetName) {
-      console.warn("[ABS] Second sheet (Data1) not found in workbook");
+      logger.warn("Second sheet (Data1) not found in ABS workbook", "ABS");
       return [];
     }
 
@@ -147,7 +147,7 @@ async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<I
     const jsonDataRaw = xlsx.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
 
     if (!jsonDataRaw || jsonDataRaw.length === 0) {
-      console.warn("[ABS] Excel file is empty");
+      logger.warn("ABS Excel file is empty", "ABS");
       return [];
     }
 
@@ -169,13 +169,13 @@ async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<I
     }
 
     if (!seriesIdRow) {
-      console.warn(`[ABS] Series ID ${seriesId} header row not found`);
+      logger.warn(`Series ID ${seriesId} header row not found`, "ABS");
       return [];
     }
 
     const columnIndex = seriesIdRow.indexOf(seriesId);
     if (columnIndex === -1) {
-      console.warn(`[ABS] Series ID ${seriesId} not found in header row`);
+      logger.warn(`Series ID ${seriesId} not found in header row`, "ABS");
       return [];
     }
 
@@ -208,10 +208,7 @@ async function readExcelFileABS(data: Buffer, metadata: TargetSeries): Promise<I
 
     return result;
   } catch (error) {
-    console.error(
-      "[ABS] Error reading Excel file:",
-      error instanceof Error ? error.message : error
-    );
+    logger.error("Error reading ABS Excel file", error, "ABS");
     return [];
   }
 }

@@ -55,7 +55,6 @@ export enum UNIT {
   MILLIONS = "MILLIONS",
   PERCENT = "PERCENT",
   INDEX = "INDEX",
-  POINTS = "NUMBER",
   CURRENCY = "CURRENCY",
 }
 

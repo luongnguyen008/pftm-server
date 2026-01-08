@@ -1,11 +1,12 @@
 import puppeteer, { Browser, Page } from "puppeteer";
+import { logger } from "../../lib/logger";
 
 export class PuppeteerClient {
   /**
    * Launch a browser instance with optimized settings
    */
   static async launchBrowser(): Promise<Browser> {
-    console.log("Launching browser...");
+    logger.info("Launching browser...", "PUPPETEER");
     return puppeteer.launch({
       headless: true,
       args: [

@@ -12,6 +12,7 @@ import {
 import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 import { getIndicatorsByType } from "../common/repository";
+import { logger } from "../../lib/logger";
 
 export const updateCentralBankBalanceSheetUSA = async () => {
   await fetchAndSave({
@@ -41,7 +42,7 @@ export const updateCBBSTotalAssetsToGDPUSA = async () => {
         indicatorType: INDICATOR_TYPE.CBBS_TOTAL_ASSETS,
       });
       if (!cbbsData.length) {
-        console.warn("No CBBS Total Assets data found.");
+        logger.warn("No CBBS Total Assets data found.", "USA");
         return [];
       }
 
@@ -51,7 +52,7 @@ export const updateCBBSTotalAssetsToGDPUSA = async () => {
         indicatorType: INDICATOR_TYPE.GDP_NOMINAL,
       });
       if (!gdpData.length) {
-        console.warn("No GDP Nominal data found.");
+        logger.warn("No GDP Nominal data found.", "USA");
         return [];
       }
 

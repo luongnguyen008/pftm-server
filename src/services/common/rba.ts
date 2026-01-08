@@ -10,6 +10,7 @@ import {
 } from "../../types";
 import { numberFormatter } from "../../lib/number-formatter";
 import { downloadExcelFile } from "../../lib/excel";
+import { logger } from "../../lib/logger";
 
 interface IRBAData {
   fileName: string;
@@ -33,7 +34,7 @@ export const fetchRBAData = async (data: IRBAData): Promise<IndicatorValue[]> =>
 
     return await readExcelFileRBA(excelData, data);
   } catch (error) {
-    console.error("[RBA] Error in fetchRBAData:", error instanceof Error ? error.message : error);
+    logger.error("Error in fetchRBAData", error, "RBA");
     return [];
   }
 };
@@ -48,7 +49,7 @@ async function readExcelFileRBA(data: Buffer, metadata: IRBAData): Promise<Indic
     const jsonDataRaw = xlsx.utils.sheet_to_json(worksheet, { header: 1 }) as ExcelRow[];
 
     if (!jsonDataRaw || jsonDataRaw.length === 0) {
-      console.warn("[RBA] Excel file is empty");
+      logger.warn("Excel file is empty", "RBA");
       return [];
     }
 
@@ -70,13 +71,13 @@ async function readExcelFileRBA(data: Buffer, metadata: IRBAData): Promise<Indic
     }
 
     if (!seriesIdRow) {
-      console.warn("[RBA] Series ID row not found in data");
+      logger.warn("Series ID row not found in data", "RBA");
       return [];
     }
 
     const columnIndex = seriesIdRow.indexOf(seriesId);
     if (columnIndex === -1) {
-      console.warn(`[RBA] Series ID ${seriesId} not found in header row`);
+      logger.warn(`Series ID ${seriesId} not found in header row`, "RBA");
       return [];
     }
 
@@ -109,10 +110,7 @@ async function readExcelFileRBA(data: Buffer, metadata: IRBAData): Promise<Indic
 
     return seriesData;
   } catch (error) {
-    console.error(
-      "[RBA] Error reading Excel file:",
-      error instanceof Error ? error.message : error
-    );
+    logger.error("Error reading Excel file", error, "RBA");
     return [];
   }
 }

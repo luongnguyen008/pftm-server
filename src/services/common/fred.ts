@@ -10,6 +10,7 @@ import {
   UNIT,
   Currency,
 } from "../../types";
+import { logger } from "../../lib/logger";
 
 export const getDataFRED = async ({
   seriesId,
@@ -53,7 +54,7 @@ export const getDataFRED = async ({
       };
     });
   } catch (error: any) {
-    console.error("Error making GET request:", error.message);
+    logger.error(`Error fetching data for ${seriesId}`, error, "FRED");
     throw error;
   }
 };

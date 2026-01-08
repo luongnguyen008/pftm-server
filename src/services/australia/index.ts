@@ -21,12 +21,14 @@ import {
 import { updateTreasuryYield10YAustralia } from "./07_treasury-yield";
 import { updateCentralBankBalanceSheetAustralia, updateCBBSTotalAssetsToGDPAustralia } from "./08_cbbs";
 
+import { logger } from "../../lib/logger";
+
 // ==========================================
 // MASTER RUNNER
 // ==========================================
 
 export const updateAllAustraliaIndicators = async () => {
-  console.log("Starting update for all Australia indicators...");
+  logger.info("Starting update for all Australia indicators...", "AUSTRALIA");
 
   // 1. Production & Consumption
   await updateManufacturingPMIAustralia();
@@ -69,5 +71,5 @@ export const updateAllAustraliaIndicators = async () => {
   await updateCentralBankBalanceSheetAustralia();
   await updateCBBSTotalAssetsToGDPAustralia();
 
-  console.log("Completed update for all Australia indicators.");
+  logger.info("Completed update for all Australia indicators.", "AUSTRALIA");
 };

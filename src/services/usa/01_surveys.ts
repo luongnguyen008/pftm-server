@@ -13,7 +13,7 @@ export const updateManufacturingPMIUSA = async () => {
         country: COUNTRY_CODE.USA,
         indicatorType: INDICATOR_TYPE.PMI,
         frequency: FREQUENCY.MONTHLY,
-        unit: UNIT.POINTS,
+        unit: UNIT.INDEX,
       });
     },
   });
@@ -29,7 +29,7 @@ export const updateServicesPMIUSA = async () => {
         country: COUNTRY_CODE.USA,
         indicatorType: INDICATOR_TYPE.SERVICE_PMI,
         frequency: FREQUENCY.MONTHLY,
-        unit: UNIT.POINTS,
+        unit: UNIT.INDEX,
       });
     },
   });

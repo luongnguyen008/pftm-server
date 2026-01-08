@@ -19,6 +19,7 @@ import {
   extractIndicatorDataFromPboAus,
 } from "../common/pbo";
 import { upsertIndicators } from "../common/repository";
+import { logger } from "../../lib/logger";
 
 // ==========================================
 // 1. Production & National Accounts (ABS)
@@ -87,18 +88,18 @@ type PboMapping = {
  * Source: Historical Fiscal Data (Table 1, 2, and 9)
  */
 export const updatePboAustraliaIndicatorsAustralia = async () => {
-  console.log("[AUSTRALIA] Starting PBO Fiscal Data update...");
+  logger.info("Starting PBO Fiscal Data update...", "AUSTRALIA");
 
   try {
     const link = await getLatestPboHistoricalFiscalDataLink();
     if (!link) {
-      console.warn("[AUSTRALIA] Could not retrieve PBO data link. Skipping update.");
+      logger.warn("Could not retrieve PBO data link. Skipping update.", "AUSTRALIA");
       return;
     }
 
     const buffer = await downloadExcelFile(link);
     if (!buffer) {
-      console.error("[AUSTRALIA] Failed to download PBO Excel file.");
+      logger.error("Failed to download PBO Excel file.", null, "AUSTRALIA");
       return;
     }
 
@@ -128,7 +129,7 @@ export const updatePboAustraliaIndicatorsAustralia = async () => {
     ];
 
     for (const mapping of mappings) {
-      console.log(`[AUSTRALIA] Extracting ${mapping.type} ("${mapping.label}") from ${mapping.sheet}...`);
+      logger.service("AUSTRALIA", `Extracting ${mapping.type} ("${mapping.label}") from ${mapping.sheet}...`);
       const data = extractIndicatorDataFromPboAus(workbook, mapping.sheet, mapping.label);
 
       if (data && data.length > 0) {
@@ -137,23 +138,21 @@ export const updatePboAustraliaIndicatorsAustralia = async () => {
           indicator_type: mapping.type,
           frequency: FREQUENCY.YEARLY,
           timestamp: item.timestamp,
-          actual: item.value,
+          actual: parseFloat(item.value.toFixed(2)),
           unit: UNIT.MILLIONS,
           currency: Currency.AUD,
         }));
 
         await upsertIndicators(indicators);
-        console.log(
-          `[AUSTRALIA] Saved ${indicators.length} records for ${mapping.type}`
-        );
+        logger.success(`Saved ${indicators.length} records for ${mapping.type}`, "AUSTRALIA");
       } else {
-        console.warn(`[AUSTRALIA] No data found for ${mapping.type} in ${mapping.sheet}`);
+        logger.warn(`No data found for ${mapping.type} in ${mapping.sheet}`, "AUSTRALIA");
       }
     }
 
-    console.log("[AUSTRALIA] Completed PBO Fiscal Data update.");
+    logger.info("Completed PBO Fiscal Data update.", "AUSTRALIA");
   } catch (error) {
-    console.error("[AUSTRALIA] Error during PBO Fiscal Data update:", error);
+    logger.error("Error during PBO Fiscal Data update", error, "AUSTRALIA");
   }
 };
 

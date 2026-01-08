@@ -1,5 +1,5 @@
 import { db } from "../../lib/db";
-import pc from "picocolors";
+import { logger } from "../../lib/logger";
 import {
   Currency,
   INDICATOR_TYPE,
@@ -98,14 +98,13 @@ export const upsertIndicators = async (data: IndicatorValue[]) => {
     }
 
     await transaction.commit();
-    console.log(
-      pc.green(
-        `Successfully processed ${data.length} records. (Inserted: ${insertedCount}, Updated: ${updatedCount})`
-      )
+    logger.success(
+      `Successfully processed ${data.length} records. (Inserted: ${insertedCount}, Updated: ${updatedCount})`,
+      "REPOSITORY"
     );
   } catch (error) {
     transaction.rollback();
-    console.error("Error upserting indicators:", error);
+    logger.error("Error upserting indicators", error, "REPOSITORY");
     throw error;
   }
 };
@@ -136,7 +135,7 @@ export const getIndicatorsByType = async ({
       currency: (row.currency as Currency) || undefined,
     }));
   } catch (error) {
-    console.error("Error getting indicators:", error);
+    logger.error("Error getting indicators", error, "REPOSITORY");
     return [];
   }
 };
@@ -147,10 +146,10 @@ export const deleteByCountry = async (country: string) => {
       sql: `DELETE FROM indicators WHERE country = ?`,
       args: [country],
     });
-    console.log(`[REPOSITORY] Deleted ${result.rowsAffected} records for country: ${country}`);
+    logger.service("REPOSITORY", `Deleted ${result.rowsAffected} records for country: ${country}`);
     return result.rowsAffected;
   } catch (error) {
-    console.error(`[REPOSITORY] Error deleting records for country ${country}:`, error);
+    logger.error(`Error deleting records for country ${country}`, error, "REPOSITORY");
     throw error;
   }
 };

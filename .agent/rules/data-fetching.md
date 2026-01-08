@@ -1,7 +1,3 @@
----
-trigger: always_on
----
-
 # Data Fetching Patterns
 
 ## Using `services/common/helper.ts`
@@ -42,183 +38,63 @@ trigger: always_on
 
 - **ONLY** call from `fetchAndSave` or derived indicator calculations
 - Never call directly from individual indicator service files
-- Automatically handles:
-  - Batching (100 records per batch)
-  - Transactions
-  - Insert vs Update tracking
-  - Conflict resolution
-- Returns void, logs results to console
+- Automatically handles batching, transactions, and conflict resolution
+- Logs results to console using the centralized `logger`
 
 ### `getIndicatorsByType` Function
 
 - Use for retrieving stored indicator data (e.g., for derived calculations)
 - Returns array sorted by timestamp ASC
-- Example:
-  ```typescript
-  const debtData = await getIndicatorsByType({
+
+## Derived Indicator Pattern
+
+### Standard Manual Calculation
+For complex derived indicators (e.g., DEBT_TO_GDP):
+
+```typescript
+export const updateDerivedIndicator = async () => {
+  await fetchAndSave({
+    indicatorType: INDICATOR_TYPE.DERIVED,
     country: COUNTRY_CODE.USA,
-    indicatorType: INDICATOR_TYPE.GOVT_DEBT,
+    fetchLogic: async () => {
+      // 1. Fetch source data
+      const sourceData = await getIndicatorsByType({ ... });
+      
+      // 2. Perform calculations
+      // 3. Return mapped IndicatorValue[]
+    }
   });
-  ```
+};
+```
 
-## Using `services/common/fred.ts`
+### Percentage Change Calculation (Generic)
+**REQUIRED**: Use the `calculateChange` utility from `src/lib/utils.ts` for simple sequential percentage changes (e.g., Inflation change, Employment growth).
 
-### `getDataFRED` Function
+```typescript
+import { calculateChange } from "../../lib/utils";
 
-- **REQUIRED**: Use for all FRED API data fetching
-- Always specify all required parameters:
-  - `seriesId`: FRED series identifier
-  - `country`: COUNTRY_CODE enum value
-  - `indicatorType`: INDICATOR_TYPE enum value
-  - `frequency`: FREQUENCY enum value
-  - `unit`: UNIT enum value (optional but recommended)
-  - `currency`: Currency enum value (for monetary indicators)
-- Returns `Promise<IndicatorValue[]>` ready for `upsertIndicators`
-- Handles pagination automatically
-- Converts date strings to Unix timestamps
+export const updateChangeIndicator = async () => {
+  await fetchAndSave({
+    indicatorType: INDICATOR_TYPE.CHANGE,
+    country: COUNTRY_CODE.USA,
+    fetchLogic: async () => {
+      const sourceData = await getIndicatorsByType({ ... });
+      if (sourceData.length === 0) return [];
 
-## Using `services/common/investing.ts`
-
-- Use for indicators not available in FRED
-- Follow similar pattern to `getDataFRED`
-- Returns `Promise<IndicatorValue[]>`
+      return calculateChange(sourceData, INDICATOR_TYPE.CHANGE, COUNTRY_CODE.USA);
+    }
+  });
+};
+```
 
 ## Using `services/common/mql5.ts` and `puppeteer-client.ts`
 
 - Use for web scraping when data is not available via API
 - `PuppeteerClient` class encapsulates browser launching and page configuration
 - Always clean up resources (close browser) in finally blocks
-- Example pattern:
-  ```typescript
-  const client = new PuppeteerClient();
-  try {
-    const page = await client.launch(url);
-    // Scraping logic...
-  } finally {
-    await client.close();
-  }
-  ```
-
-## Standard Indicator Fetching Template
-
-Every indicator service file should follow this pattern:
-
-```typescript
-import { fetchAndSave } from "../common/helper";
-import { getDataFRED } from "../common/fred";
-import { COUNTRY_CODE, INDICATOR_TYPE, FREQUENCY, UNIT, Currency } from "../../types";
-
-export const updateIndicatorName = async () => {
-  await fetchAndSave({
-    indicatorType: INDICATOR_TYPE.EXAMPLE,
-    country: COUNTRY_CODE.USA,
-    fetchLogic: async () => {
-      return getDataFRED({
-        seriesId: "FRED_SERIES_ID",
-        country: COUNTRY_CODE.USA,
-        indicatorType: INDICATOR_TYPE.EXAMPLE,
-        frequency: FREQUENCY.MONTHLY,
-        unit: UNIT.BILLIONS,
-        currency: Currency.USD, // Only for monetary indicators
-      });
-    },
-  });
-};
-```
-
-## Derived Indicator Pattern
-
-For calculated indicators (e.g., DEBT_TO_GDP):
-
-```typescript
-export const updateDerivedIndicator = async () => {
-  console.log("[COUNTRY] Calculating DERIVED_INDICATOR...");
-
-  // 1. Fetch required source data
-  const sourceData1 = await getIndicatorsByType({
-    country: COUNTRY_CODE.USA,
-    indicatorType: INDICATOR_TYPE.SOURCE1,
-  });
-
-  const sourceData2 = await getIndicatorsByType({
-    country: COUNTRY_CODE.USA,
-    indicatorType: INDICATOR_TYPE.SOURCE2,
-  });
-
-  // 2. Check for empty datasets
-  if (sourceData1.length === 0 || sourceData2.length === 0) {
-    console.warn("Insufficient data for calculation");
-    return;
-  }
-
-  // 3. Match data by timestamp/quarter
-  const map1 = new Map(sourceData1.map((item) => [getYearQuarter(item.timestamp), item]));
-
-  // 4. Calculate derived values
-  const derivedData: IndicatorValue[] = sourceData2
-    .map((item2) => {
-      const key = getYearQuarter(item2.timestamp);
-      const item1 = map1.get(key);
-
-      if (!item1) return null;
-
-      // Perform calculation with unit conversion
-      const value = calculateDerived(item1, item2);
-
-      return {
-        country: COUNTRY_CODE.USA,
-        indicator_type: INDICATOR_TYPE.DERIVED,
-        frequency: FREQUENCY.QUARTERLY,
-        timestamp: item2.timestamp,
-        actual: value,
-        unit: UNIT.PERCENT,
-      };
-    })
-    .filter((item): item is IndicatorValue => item !== null);
-
-  // 5. Save results
-  await upsertIndicators(derivedData);
-  console.log(`[COUNTRY] Calculated ${derivedData.length} derived records`);
-};
-```
 
 ## Required Fields
 
 - Always specify `unit` for new indicators
 - Add `currency` for all monetary values
 - Use appropriate `frequency` (DAILY, WEEKLY, MONTHLY, QUARTERLY, YEARLY)
-
-## Caching Patterns
-
-### InMemoryCache (Preferred)
-
-- **REQUIRED**: Use InMemoryCache from lib/cache.ts for temporary data that doesn't need persistence (e.g., downloaded files, API responses in a single run).
-- Always specify a reasonable TTL (Time To Live).
-- Pattern:
-
-  ```typescript
-  import { InMemoryCache } from "../../lib/cache";
-
-  const dataCache = new InMemoryCache<DataType>();
-  const CACHE_TTL = 60 * 60 * 1000; // 1 hour
-
-  const getData = async (key: string) => {
-    const cached = dataCache.get(key);
-    if (cached) return cached;
-
-    const data = await fetchData();
-    dataCache.set(key, data, CACHE_TTL);
-    return data;
-  };
-  ```
-
-
-### PersistentDictionaryCache
-
-- Use for data that should persist across different runs (stored in .cache/ directory).
-- Ideal for small to medium settings or mappings where multiple keys should live in a single file.
-
-### Global Caches
-
-- **excelLinkCache**: Pre-configured global cache for Excel links. Consolidates all persistent links into `.cache/excel-link.json`.
-- Use this to store discovered URLs (e.g., ABS, PBO) to avoid redundant search loops across server restarts.

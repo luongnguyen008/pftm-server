@@ -12,8 +12,8 @@
     "start": "tsx src/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "drop-country": "tsx src/lib/drop-country.ts",
-    "gen-folder": "tsx scripts/gen-country.ts"
+    "drop-country": "tsx scripts/db-drop-country.ts",
+    "gen-folder": "tsx scripts/app-gen-country-folder.ts"
   },
   "author": "",
   "dependencies": {

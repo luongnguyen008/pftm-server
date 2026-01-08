@@ -13,7 +13,7 @@ trigger: always_on
 ## Unit Handling
 
 - Always specify `unit` when creating indicator data
-- Use the `UNIT` enum: `BILLIONS`, `MILLIONS`, `THOUSANDS`, `PERCENT`, `INDEX`, `POINTS`
+- Use the `UNIT` enum: `BILLIONS`, `MILLIONS`, `THOUSANDS`, `PERCENT`, `INDEX`
 - Add `currency` field when applicable (use `Currency` enum)
 
 ## Data Normalization

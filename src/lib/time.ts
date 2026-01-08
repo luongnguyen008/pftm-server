@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import utc from "dayjs/plugin/utc";
+import { logger } from "./logger";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(utc);
@@ -22,7 +23,7 @@ export const toTimestamp = (time: DateType, format?: string) => {
   }
 
   if (!date.isValid()) {
-    console.warn(`Invalid date format: ${time}`);
+    logger.warn(`Invalid date format: ${time}`, "TIME");
     return 0;
   }
 
@@ -98,7 +99,7 @@ export const fiscalYearToTimestamp = (fiscalYear: string): number => {
   // Extract the starting year (first 4 digits)
   const match = fiscalYear.match(/^(\d{4})/);
   if (!match) {
-    console.warn(`Invalid fiscal year format: ${fiscalYear}`);
+    logger.warn(`Invalid fiscal year format: ${fiscalYear}`, "TIME");
     return 0;
   }
 

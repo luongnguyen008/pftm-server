@@ -23,12 +23,14 @@ import {
 } from "./06_government";
 import { updateTreasuryYield10Y } from "./07_treasury-yield";
 import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./08_cbbs";
+import { logger } from "../../lib/logger";
+
 // ==========================================
 // MASTER RUNNER
 // ==========================================
 
 export const updateAllExampleIndicators = async () => {
-  console.log("Starting update for all Example indicators...");
+  logger.info("Starting update for all Example indicators...", "EXAMPLE");
 
   // 1. Production & Consumption
   await updateManufacturingPMI();
@@ -72,5 +74,5 @@ export const updateAllExampleIndicators = async () => {
   await updateCentralBankBalanceSheet();
   await updateCBBSTotalAssetsToGDP();
 
-  console.log("Completed update for all Example indicators.");
+  logger.info("Completed update for all Example indicators.", "EXAMPLE");
 };

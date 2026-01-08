@@ -9,6 +9,7 @@ import {
   IndicatorValue,
   UNIT,
 } from "../../types";
+import { logger } from "../../lib/logger";
 
 interface MQL5DataPoint {
   timestamp: number; // Unix timestamp in seconds
@@ -35,7 +36,7 @@ async function getTotalPages(page: Page): Promise<number> {
 
     return paginationLinks.length;
   } catch (error) {
-    console.error("Error getting total pages:", error);
+    logger.error("Error getting total pages", error, "MQL5");
     return 1;
   }
 }
@@ -132,7 +133,7 @@ async function fetchPageData(page: Page): Promise<MQL5DataPoint[]> {
 
     return eventHistoryItems;
   } catch (error) {
-    console.error(`Error fetching page data:`, error);
+    logger.error("Error fetching page data", error, "MQL5");
     return [];
   }
 }
@@ -184,7 +185,7 @@ export async function fetchMQL5History(baseUrl: string): Promise<MQL5DataPoint[]
             const data = await fetchPageData(pageTab!);
             return data;
           } catch (err) {
-            console.error(`Error fetching page ${pageNum}:`, err);
+            logger.error(`Error fetching page ${pageNum}`, err, "MQL5");
             return [];
           } finally {
             if (pageTab) await pageTab.close();
@@ -200,7 +201,7 @@ export async function fetchMQL5History(baseUrl: string): Promise<MQL5DataPoint[]
 
     return sortedData;
   } catch (error) {
-    console.error("Error fetching MQL5 history:", error);
+    logger.error("Error fetching MQL5 history", error, "MQL5");
     return [];
   } finally {
     if (browser) {
