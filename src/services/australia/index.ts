@@ -1,25 +1,25 @@
-import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./8. cbbs";
-import { updateEmploymentChange, updateUnemploymentRate } from "./5. employment";
 import {
-  updateBudgetSurplusDeficit,
-  updateDebtToGDP,
-  updateGDPGrowth,
-  updateGDPNominal,
-  updateInterestBillsToGDP,
-  updateLiquidityCover,
-  updatePboAustraliaIndicators,
-  updateSurplusDeficitToGDP,
-} from "./6. government";
-import { updateTreasuryYield10Y } from "./7. treasury-yield";
-import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./4. inflation";
-import { updateInterestRate } from "./3. interest-rates";
-import { updateMoneySupplyM3Change } from "./2. money-supply";
+  updateBuildingPermitsAustralia,
+  updateConsumerSentimentAustralia,
+  updateManufacturingPMIAustralia,
+  updateServicesPMIAustralia,
+} from "./01. surveys";
+import { updateMoneySupplyM3ChangeAustralia } from "./02. money-supply";
+import { updateInterestRateAustralia } from "./03. interest-rates";
+import { updateCoreCPIAustralia, updateCorePPIAustralia, updateCPIAustralia, updatePPIAustralia } from "./04. inflation";
+import { updateEmploymentChangeAustralia, updateUnemploymentRateAustralia } from "./05. employment";
 import {
-  updateBuildingPermits,
-  updateConsumerSentiment,
-  updateManufacturingPMI,
-  updateServicesPMI,
-} from "./1. surveys";
+  updateBudgetSurplusDeficitAustralia,
+  updateDebtToGDPAustralia,
+  updateGDPGrowthAustralia,
+  updateGDPNominalAustralia,
+  updateInterestBillsToGDPAustralia,
+  updateLiquidityCoverAustralia,
+  updatePboAustraliaIndicatorsAustralia,
+  updateSurplusDeficitToGDPAustralia,
+} from "./06. government";
+import { updateTreasuryYield10YAustralia } from "./07_treasury-yield";
+import { updateCentralBankBalanceSheetAustralia, updateCBBSTotalAssetsToGDPAustralia } from "./08_cbbs";
 
 // ==========================================
 // MASTER RUNNER
@@ -29,45 +29,45 @@ export const updateAllAustraliaIndicators = async () => {
   console.log("Starting update for all Australia indicators...");
 
   // 1. Production & Consumption
-  await updateManufacturingPMI();
-  await updateServicesPMI();
-  await updateConsumerSentiment();
-  await updateBuildingPermits();
+  await updateManufacturingPMIAustralia();
+  await updateServicesPMIAustralia();
+  await updateConsumerSentimentAustralia();
+  await updateBuildingPermitsAustralia();
 
   // 2. Money Supply
-  await updateMoneySupplyM3Change();
+  await updateMoneySupplyM3ChangeAustralia();
 
   // 3. Interest Rate
-  await updateInterestRate();
+  await updateInterestRateAustralia();
 
   // 4. Inflation
-  await updateCPI();
-  await updateCoreCPI();
-  await updatePPI();
-  await updateCorePPI();
+  await updateCPIAustralia();
+  await updateCoreCPIAustralia();
+  await updatePPIAustralia();
+  await updateCorePPIAustralia();
 
   // 5. Labor
-  await updateEmploymentChange();
-  await updateUnemploymentRate();
+  await updateEmploymentChangeAustralia();
+  await updateUnemploymentRateAustralia();
 
   // 6. GDP & Govt
-  await updateGDPNominal();
-  await updateGDPGrowth();
+  await updateGDPNominalAustralia();
+  await updateGDPGrowthAustralia();
 
-  await updatePboAustraliaIndicators(); // Get Debt / Receipts / Payments / Interest Bills from PBO
+  await updatePboAustraliaIndicatorsAustralia(); // Get Debt / Receipts / Payments / Interest Bills from PBO
   
-  await updateDebtToGDP();
-  await updateBudgetSurplusDeficit();
-  await updateSurplusDeficitToGDP();
-  await updateInterestBillsToGDP();
-  await updateLiquidityCover();
+  await updateDebtToGDPAustralia();
+  await updateBudgetSurplusDeficitAustralia();
+  await updateSurplusDeficitToGDPAustralia();
+  await updateInterestBillsToGDPAustralia();
+  await updateLiquidityCoverAustralia();
 
   // 7. Treasury Yield 10Y
-  await updateTreasuryYield10Y();
+  await updateTreasuryYield10YAustralia();
 
   // 8. Central Bank
-  await updateCentralBankBalanceSheet();
-  await updateCBBSTotalAssetsToGDP();
+  await updateCentralBankBalanceSheetAustralia();
+  await updateCBBSTotalAssetsToGDPAustralia();
 
   console.log("Completed update for all Australia indicators.");
 };

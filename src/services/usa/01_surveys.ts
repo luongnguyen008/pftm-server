@@ -3,7 +3,7 @@ import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 import { fetchInvestingData } from "../common/investing";
 
-export const updateManufacturingPMI = async () => {
+export const updateManufacturingPMIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.PMI,
     country: COUNTRY_CODE.USA,
@@ -19,7 +19,7 @@ export const updateManufacturingPMI = async () => {
   });
 };
 
-export const updateServicesPMI = async () => {
+export const updateServicesPMIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SERVICE_PMI,
     country: COUNTRY_CODE.USA,
@@ -35,7 +35,7 @@ export const updateServicesPMI = async () => {
   });
 };
 
-export const updateConsumerSentiment = async () => {
+export const updateConsumerSentimentUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CONSUMER_SENTIMENT,
     country: COUNTRY_CODE.USA,
@@ -51,7 +51,7 @@ export const updateConsumerSentiment = async () => {
   });
 };
 
-export const updateBuildingPermits = async () => {
+export const updateBuildingPermitsUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.BUILDING_PERMITS,
     country: COUNTRY_CODE.USA,

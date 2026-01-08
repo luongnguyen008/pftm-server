@@ -2,20 +2,20 @@ import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, UNIT } from "../../types";
 import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 
-/**
- * Updates 10-Year Treasury Yield for the USA.
- * Source: FRED (WGS10YR)
- */
-export const updateTreasuryYield10Y = async () => {
+// ==========================================
+// 3. Interest Rate
+// ==========================================
+
+export const updateInterestRateUSA = async () => {
   await fetchAndSave({
-    indicatorType: INDICATOR_TYPE.TREASURY_10_YEAR,
+    indicatorType: INDICATOR_TYPE.IR,
     country: COUNTRY_CODE.USA,
     fetchLogic: async () => {
       return getDataFRED({
-        seriesId: "WGS10YR",
+        seriesId: "FEDFUNDS",
         country: COUNTRY_CODE.USA,
-        indicatorType: INDICATOR_TYPE.TREASURY_10_YEAR,
-        frequency: FREQUENCY.WEEKLY,
+        indicatorType: INDICATOR_TYPE.IR,
+        frequency: FREQUENCY.MONTHLY,
         unit: UNIT.PERCENT,
       });
     },

@@ -1,5 +1,13 @@
-import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./8. cbbs";
-import { updateEmploymentChange, updateUnemploymentRate } from "./5. employment";
+import {
+  updateBuildingPermits,
+  updateConsumerSentiment,
+  updateManufacturingPMI,
+  updateServicesPMI,
+} from "./01_surveys";
+import { updateMoneySupplyM2 } from "./02_money-supply";
+import { updateInterestRate } from "./03_interest-rates";
+import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./04_inflation";
+import { updateEmploymentChange, updateUnemploymentRate } from "./05_employment";
 import {
   updateBudgetSurplusDeficit,
   updateDebtToGDP,
@@ -12,18 +20,9 @@ import {
   updateInterestBillsToGDP,
   updateLiquidityCover,
   updateSurplusDeficitToGDP,
-} from "./6. government";
-import { updateTreasuryYield10Y } from "./7. treasury-yield";
-import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./4. inflation";
-import { updateInterestRate } from "./3. interest-rates";
-import { updateMoneySupplyM2 } from "./2. money-supply";
-import {
-  updateBuildingPermits,
-  updateConsumerSentiment,
-  updateManufacturingPMI,
-  updateServicesPMI,
-} from "./1. surveys";
-
+} from "./06_government";
+import { updateTreasuryYield10Y } from "./07_treasury-yield";
+import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./08_cbbs";
 // ==========================================
 // MASTER RUNNER
 // ==========================================

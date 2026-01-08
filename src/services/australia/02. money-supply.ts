@@ -2,7 +2,7 @@ import { fetchAndSave } from "../common/helper";
 import { INDICATOR_TYPE, COUNTRY_CODE, FREQUENCY, UNIT } from "../../types";
 import { fetchRBAData } from "../common/rba";
 
-export const updateMoneySupplyM3Change = async () => {
+export const updateMoneySupplyM3ChangeAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.M3_CHANGE,
     country: COUNTRY_CODE.AUSTRALIA,

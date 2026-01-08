@@ -3,7 +3,7 @@ import { INDICATOR_TYPE, COUNTRY_CODE, FREQUENCY, UNIT } from "../../types";
 import { fetchRBAData } from "../common/rba";
 import { getDataABS } from "../common/abs";
 
-export const updateCPI = async () => {
+export const updateCPIAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CPI_CHANGE,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -20,7 +20,7 @@ export const updateCPI = async () => {
   });
 };
 
-export const updateCoreCPI = async () => {
+export const updateCoreCPIAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CORE_CPI_CHANGE,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -37,7 +37,7 @@ export const updateCoreCPI = async () => {
   });
 };
 
-export const updatePPI = async () => {
+export const updatePPIAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.PPI_CHANGE,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -55,7 +55,7 @@ export const updatePPI = async () => {
   });
 };
 
-export const updateCorePPI = async () => {
+export const updateCorePPIAustralia = async () => {
   // Not available
   return [];
 };

@@ -135,7 +135,6 @@ export function extractIndicatorDataFromPboAus(
       });
     }
   }
-  console.log("results", results.slice(-10));
   
   return results;
 }

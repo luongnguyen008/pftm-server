@@ -28,7 +28,7 @@ import { upsertIndicators } from "../common/repository";
  * Updates Nominal GDP for Australia.
  * Source: ABS - Key Aggregates (5206.0)
  */
-export const updateGDPNominal = async () => {
+export const updateGDPNominalAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GDP_NOMINAL,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -52,7 +52,7 @@ export const updateGDPNominal = async () => {
  * Updates Real GDP Growth for Australia.
  * Source: ABS - Key Aggregates (5206.0)
  */
-export const updateGDPGrowth = async () => {
+export const updateGDPGrowthAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GDP_GROWTH,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -86,7 +86,7 @@ type PboMapping = {
  * Fetches Receipts, Payments, Net Interest, and Government Debt (AGS).
  * Source: Historical Fiscal Data (Table 1, 2, and 9)
  */
-export const updatePboAustraliaIndicators = async () => {
+export const updatePboAustraliaIndicatorsAustralia = async () => {
   console.log("[AUSTRALIA] Starting PBO Fiscal Data update...");
 
   try {
@@ -165,7 +165,7 @@ export const updatePboAustraliaIndicators = async () => {
  * Calculates Debt to GDP ratio.
  * Combines Yearly PBO Debt with Q4 Nominal GDP.
  */
-export const updateDebtToGDP = async () => {
+export const updateDebtToGDPAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.DEBT_TO_GDP,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -223,7 +223,7 @@ export const updateDebtToGDP = async () => {
  * Calculates Budget Surplus/Deficit.
  * Surplus = Receipts - Payments.
  */
-export const updateBudgetSurplusDeficit = async () => {
+export const updateBudgetSurplusDeficitAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SURPLUS_DEFICIT,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -277,7 +277,7 @@ export const updateBudgetSurplusDeficit = async () => {
 /**
  * Calculates Budget Surplus/Deficit to GDP ratio.
  */
-export const updateSurplusDeficitToGDP = async () => {
+export const updateSurplusDeficitToGDPAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SURPLUS_DEFICIT_TO_GDP,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -333,7 +333,7 @@ export const updateSurplusDeficitToGDP = async () => {
 /**
  * Calculates Government Interest Charges to GDP ratio.
  */
-export const updateInterestBillsToGDP = async () => {
+export const updateInterestBillsToGDPAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.INTEREST_BILLS_TO_GDP,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -390,7 +390,7 @@ export const updateInterestBillsToGDP = async () => {
  * Calculates Liquidity Cover (Receipts / Interest Bills).
  * Measures how many times government revenue covers interest expenses.
  */
-export const updateLiquidityCover = async () => {
+export const updateLiquidityCoverAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.LIQUIDITY_COVER,
     country: COUNTRY_CODE.AUSTRALIA,

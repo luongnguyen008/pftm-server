@@ -13,7 +13,7 @@ import { numberFormatter } from "../../lib/number-formatter";
 import { getYearQuarter, getYear } from "../../lib/time";
 import { fetchAndSave } from "../common/helper";
 
-export const updateGDPNominal = async () => {
+export const updateGDPNominalUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GDP_NOMINAL,
     country: COUNTRY_CODE.USA,
@@ -30,7 +30,7 @@ export const updateGDPNominal = async () => {
   });
 };
 
-export const updateGDPGrowth = async () => {
+export const updateGDPGrowthUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GDP_GROWTH,
     country: COUNTRY_CODE.USA,
@@ -46,7 +46,7 @@ export const updateGDPGrowth = async () => {
   });
 };
 
-export const updateGovernmentDebt = async () => {
+export const updateGovernmentDebtUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GOVT_DEBT,
     country: COUNTRY_CODE.USA,
@@ -63,7 +63,7 @@ export const updateGovernmentDebt = async () => {
   });
 };
 
-export const updateGovernmentReceipts = async () => {
+export const updateGovernmentReceiptsUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GOVT_RECEIPTS,
     country: COUNTRY_CODE.USA,
@@ -80,7 +80,7 @@ export const updateGovernmentReceipts = async () => {
   });
 };
 
-export const updateGovernmentPayments = async () => {
+export const updateGovernmentPaymentsUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GOVT_PAYMENTS,
     country: COUNTRY_CODE.USA,
@@ -97,7 +97,7 @@ export const updateGovernmentPayments = async () => {
   });
 };
 
-export const updateGovernmentInterestBills = async () => {
+export const updateGovernmentInterestBillsUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.GOVT_INTEREST_BILLS,
     country: COUNTRY_CODE.USA,
@@ -114,7 +114,7 @@ export const updateGovernmentInterestBills = async () => {
   });
 };
 
-export const updateDebtToGDP = async () => {
+export const updateDebtToGDPUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.DEBT_TO_GDP,
     country: COUNTRY_CODE.USA,
@@ -179,7 +179,7 @@ export const updateDebtToGDP = async () => {
   });
 };
 
-export const updateBudgetSurplusDeficit = async () => {
+export const updateBudgetSurplusDeficitUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SURPLUS_DEFICIT,
     country: COUNTRY_CODE.USA,
@@ -248,7 +248,7 @@ export const updateBudgetSurplusDeficit = async () => {
   });
 };
 
-export const updateSurplusDeficitToGDP = async () => {
+export const updateSurplusDeficitToGDPUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SURPLUS_DEFICIT_TO_GDP,
     country: COUNTRY_CODE.USA,
@@ -321,7 +321,7 @@ export const updateSurplusDeficitToGDP = async () => {
   });
 };
 
-export const updateInterestBillsToGDP = async () => {
+export const updateInterestBillsToGDPUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.INTEREST_BILLS_TO_GDP,
     country: COUNTRY_CODE.USA,
@@ -391,7 +391,7 @@ export const updateInterestBillsToGDP = async () => {
   });
 };
 
-export const updateLiquidityCover = async () => {
+export const updateLiquidityCoverUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.LIQUIDITY_COVER,
     country: COUNTRY_CODE.USA,

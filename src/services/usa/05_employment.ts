@@ -2,7 +2,7 @@ import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, UNIT } from "../../types";
 import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 
-export const updateEmploymentChange = async () => {
+export const updateEmploymentChangeUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.EMPLOYMENT_CHANGE,
     country: COUNTRY_CODE.USA,
@@ -19,7 +19,7 @@ export const updateEmploymentChange = async () => {
   });
 };
 
-export const updateUnemploymentRate = async () => {
+export const updateUnemploymentRateUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.UNEMPLOYMENT_RATE,
     country: COUNTRY_CODE.USA,

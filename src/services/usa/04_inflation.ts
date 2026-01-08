@@ -2,7 +2,7 @@ import { COUNTRY_CODE, FREQUENCY, INDICATOR_TYPE, UNIT } from "../../types";
 import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 
-export const updateCPI = async () => {
+export const updateCPIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CPI,
     country: COUNTRY_CODE.USA,
@@ -18,7 +18,7 @@ export const updateCPI = async () => {
   });
 };
 
-export const updateCoreCPI = async () => {
+export const updateCoreCPIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CORE_CPI,
     country: COUNTRY_CODE.USA,
@@ -34,7 +34,7 @@ export const updateCoreCPI = async () => {
   });
 };
 
-export const updatePPI = async () => {
+export const updatePPIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.PPI,
     country: COUNTRY_CODE.USA,
@@ -50,7 +50,7 @@ export const updatePPI = async () => {
   });
 };
 
-export const updateCorePPI = async () => {
+export const updateCorePPIUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CORE_PPI,
     country: COUNTRY_CODE.USA,

@@ -2,7 +2,7 @@ import { fetchAndSave } from "../common/helper";
 import { INDICATOR_TYPE, COUNTRY_CODE, FREQUENCY, UNIT } from "../../types";
 import { getDataABS } from "../common/abs";
 
-export const updateEmploymentChange = async () => {
+export const updateEmploymentChangeAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.EMPLOYMENT_CHANGE,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -20,7 +20,7 @@ export const updateEmploymentChange = async () => {
   });
 };
 
-export const updateUnemploymentRate = async () => {
+export const updateUnemploymentRateAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.UNEMPLOYMENT_RATE,
     country: COUNTRY_CODE.AUSTRALIA,

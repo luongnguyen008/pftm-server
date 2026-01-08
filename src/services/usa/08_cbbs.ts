@@ -13,7 +13,7 @@ import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 import { getIndicatorsByType } from "../common/repository";
 
-export const updateCentralBankBalanceSheet = async () => {
+export const updateCentralBankBalanceSheetUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CBBS_TOTAL_ASSETS,
     country: COUNTRY_CODE.USA,
@@ -30,7 +30,7 @@ export const updateCentralBankBalanceSheet = async () => {
   });
 };
 
-export const updateCBBSTotalAssetsToGDP = async () => {
+export const updateCBBSTotalAssetsToGDPUSA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CBBS_TOTAL_ASSETS_TO_GDP,
     country: COUNTRY_CODE.USA,

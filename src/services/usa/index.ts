@@ -1,28 +1,28 @@
-import { updateCBBSTotalAssetsToGDP, updateCentralBankBalanceSheet } from "./8. cbbs";
-import { updateEmploymentChange, updateUnemploymentRate } from "./5. employment";
 import {
-  updateBudgetSurplusDeficit,
-  updateDebtToGDP,
-  updateGDPGrowth,
-  updateGDPNominal,
-  updateGovernmentDebt,
-  updateGovernmentInterestBills,
-  updateGovernmentPayments,
-  updateGovernmentReceipts,
-  updateInterestBillsToGDP,
-  updateLiquidityCover,
-  updateSurplusDeficitToGDP,
-} from "./6. government";
-import { updateTreasuryYield10Y } from "./7. treasury-yield";
-import { updateCoreCPI, updateCorePPI, updateCPI, updatePPI } from "./4. inflation";
-import { updateInterestRate } from "./3. interest-rates";
-import { updateMoneySupplyM2 } from "./2. money-supply";
+  updateBuildingPermitsUSA,
+  updateConsumerSentimentUSA,
+  updateManufacturingPMIUSA,
+  updateServicesPMIUSA,
+} from "./01_surveys";
+import { updateMoneySupplyM2USA } from "./02_money-supply";
+import { updateInterestRateUSA } from "./03_interest-rates";
+import { updateCoreCPIUSA, updateCorePPIUSA, updateCPIUSA, updatePPIUSA } from "./04_inflation";
+import { updateEmploymentChangeUSA, updateUnemploymentRateUSA } from "./05_employment";
 import {
-  updateBuildingPermits,
-  updateConsumerSentiment,
-  updateManufacturingPMI,
-  updateServicesPMI,
-} from "./1. surveys";
+  updateBudgetSurplusDeficitUSA,
+  updateDebtToGDPUSA,
+  updateGDPGrowthUSA,
+  updateGDPNominalUSA,
+  updateGovernmentDebtUSA,
+  updateGovernmentInterestBillsUSA,
+  updateGovernmentPaymentsUSA,
+  updateGovernmentReceiptsUSA,
+  updateInterestBillsToGDPUSA,
+  updateLiquidityCoverUSA,
+  updateSurplusDeficitToGDPUSA,
+} from "./06_government";
+import { updateTreasuryYield10YUSA } from "./07_treasury-yield";
+import { updateCBBSTotalAssetsToGDPUSA, updateCentralBankBalanceSheetUSA } from "./08_cbbs";
 
 // ==========================================
 // MASTER RUNNER
@@ -32,46 +32,46 @@ export const updateAllUSAIndicators = async () => {
   console.log("Starting update for all USA indicators...");
 
   // 1. Production & Consumption
-  await updateManufacturingPMI();
-  await updateServicesPMI();
-  await updateConsumerSentiment();
-  await updateBuildingPermits();
+  await updateManufacturingPMIUSA();
+  await updateServicesPMIUSA();
+  await updateConsumerSentimentUSA();
+  await updateBuildingPermitsUSA();
 
   // 2. Money Supply
-  await updateMoneySupplyM2();
+  await updateMoneySupplyM2USA();
 
   // 3. Interest Rate
-  await updateInterestRate();
+  await updateInterestRateUSA();
 
   // 4. Inflation
-  await updateCPI();
-  await updateCoreCPI();
-  await updatePPI();
-  await updateCorePPI();
+  await updateCPIUSA();
+  await updateCoreCPIUSA();
+  await updatePPIUSA();
+  await updateCorePPIUSA();
 
   // 5. Labor
-  await updateEmploymentChange();
-  await updateUnemploymentRate();
+  await updateEmploymentChangeUSA();
+  await updateUnemploymentRateUSA();
 
   // 6. GDP & Govt
-  await updateGDPNominal();
-  await updateGDPGrowth();
-  await updateGovernmentDebt();
-  await updateGovernmentReceipts();
-  await updateGovernmentPayments();
-  await updateGovernmentInterestBills();
-  await updateDebtToGDP();
-  await updateBudgetSurplusDeficit();
-  await updateSurplusDeficitToGDP();
-  await updateInterestBillsToGDP();
-  await updateLiquidityCover();
+  await updateGDPNominalUSA();
+  await updateGDPGrowthUSA();
+  await updateGovernmentDebtUSA();
+  await updateGovernmentReceiptsUSA();
+  await updateGovernmentPaymentsUSA();
+  await updateGovernmentInterestBillsUSA();
+  await updateDebtToGDPUSA();
+  await updateBudgetSurplusDeficitUSA();
+  await updateSurplusDeficitToGDPUSA();
+  await updateInterestBillsToGDPUSA();
+  await updateLiquidityCoverUSA();
 
   // 7. Treasury Yield 10Y
-  await updateTreasuryYield10Y();
+  await updateTreasuryYield10YUSA();
 
   // 8. Central Bank
-  await updateCentralBankBalanceSheet();
-  await updateCBBSTotalAssetsToGDP();
+  await updateCentralBankBalanceSheetUSA();
+  await updateCBBSTotalAssetsToGDPUSA();
 
   console.log("Completed update for all USA indicators.");
 };

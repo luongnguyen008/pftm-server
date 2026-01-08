@@ -2,7 +2,7 @@ import { COUNTRY_CODE, Currency, FREQUENCY, INDICATOR_TYPE, UNIT } from "../../t
 import { getDataFRED } from "../common/fred";
 import { fetchAndSave } from "../common/helper";
 
-export const updateMoneySupplyM2 = async () => {
+export const updateMoneySupplyM2USA = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.M2,
     country: COUNTRY_CODE.USA,

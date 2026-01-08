@@ -4,7 +4,7 @@ import { fetchAndSave } from "../common/helper";
 import { fetchMQL5Data } from "../common/mql5";
 import { fetchRBAData } from "../common/rba";
 
-export const updateManufacturingPMI = async () => {
+export const updateManufacturingPMIAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.PMI,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -20,7 +20,7 @@ export const updateManufacturingPMI = async () => {
   });
 };
 
-export const updateServicesPMI = async () => {
+export const updateServicesPMIAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.SERVICE_PMI,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -36,7 +36,7 @@ export const updateServicesPMI = async () => {
   });
 };
 
-export const updateConsumerSentiment = async () => {
+export const updateConsumerSentimentAustralia = async () => {
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.CONSUMER_SENTIMENT,
     country: COUNTRY_CODE.AUSTRALIA,
@@ -53,7 +53,7 @@ export const updateConsumerSentiment = async () => {
   });
 };
 
-export const updateBuildingPermits = async () => {
+export const updateBuildingPermitsAustralia = async () => {
   // TODO: Implement
   await fetchAndSave({
     indicatorType: INDICATOR_TYPE.BUILDING_PERMITS,
