@@ -1,62 +1,66 @@
-export enum INDICATOR_TYPE {
-  PMI = "PMI",
-  SERVICE_PMI = "SERVICE_PMI",
-  CONSUMER_SENTIMENT = "CONSUMER_SENTIMENT",
-  BUILDING_PERMITS = "BUILDING_PERMITS",
-  M2 = "M2",
-  M3 = "M3",
-  M3_CHANGE = "M3_CHANGE",
-  IR = "IR",
-  CPI = "CPI",
-  CPI_CHANGE = "CPI_CHANGE",
-  CORE_CPI = "CORE_CPI",
-  CORE_CPI_CHANGE = "CORE_CPI_CHANGE",
-  PPI = "PPI",
-  PPI_CHANGE = "PPI_CHANGE",
-  CORE_PPI = "CORE_PPI",
-  CORE_PPI_CHANGE = "CORE_PPI_CHANGE",
-  EMPLOYMENT_CHANGE = "EMPLOYMENT_CHANGE",
-  UNEMPLOYMENT_RATE = "UNEMPLOYMENT_RATE",
-  GDP_NOMINAL = "GDP_NOMINAL",
-  GDP_GROWTH = "GDP_GROWTH",
-  GOVT_DEBT = "GOVT_DEBT",
-  GOVT_RECEIPTS = "GOVT_RECEIPTS",
-  GOVT_PAYMENTS = "GOVT_PAYMENTS",
-  GOVT_INTEREST_BILLS = "GOVT_INTEREST_BILLS",
-  DEBT_TO_GDP = "DEBT_TO_GDP",
-  SURPLUS_DEFICIT = "SURPLUS_DEFICIT",
-  SURPLUS_DEFICIT_TO_GDP = "SURPLUS_DEFICIT_TO_GDP",
-  INTEREST_BILLS_TO_GDP = "INTEREST_BILLS_TO_GDP",
-  LIQUIDITY_COVER = "LIQUIDITY_COVER",
-  TREASURY_10_YEAR = "TREASURY_10_YEAR",
-  TREASURY_10_YEAR_RATE_CHANGE = "TREASURY_10_YEAR_RATE_CHANGE",
-  CBBS_TOTAL_ASSETS = "CBBS_TOTAL_ASSETS",
-  CBBS_TOTAL_ASSETS_TO_GDP = "CBBS_TOTAL_ASSETS_TO_GDP",
-}
+export const INDICATOR_TYPE = {
+  PMI: "PMI",
+  SERVICE_PMI: "SERVICE_PMI",
+  CONSUMER_SENTIMENT: "CONSUMER_SENTIMENT",
+  BUILDING_PERMITS: "BUILDING_PERMITS",
+  M2: "M2",
+  M3: "M3",
+  M3_CHANGE: "M3_CHANGE",
+  IR: "IR",
+  CPI: "CPI",
+  CPI_CHANGE: "CPI_CHANGE",
+  CORE_CPI: "CORE_CPI",
+  CORE_CPI_CHANGE: "CORE_CPI_CHANGE",
+  PPI: "PPI",
+  PPI_CHANGE: "PPI_CHANGE",
+  CORE_PPI: "CORE_PPI",
+  CORE_PPI_CHANGE: "CORE_PPI_CHANGE",
+  EMPLOYMENT_CHANGE: "EMPLOYMENT_CHANGE",
+  UNEMPLOYMENT_RATE: "UNEMPLOYMENT_RATE",
+  GDP_NOMINAL: "GDP_NOMINAL",
+  GDP_GROWTH: "GDP_GROWTH",
+  GOVT_DEBT: "GOVT_DEBT",
+  GOVT_RECEIPTS: "GOVT_RECEIPTS",
+  GOVT_PAYMENTS: "GOVT_PAYMENTS",
+  GOVT_INTEREST_BILLS: "GOVT_INTEREST_BILLS",
+  DEBT_TO_GDP: "DEBT_TO_GDP",
+  SURPLUS_DEFICIT: "SURPLUS_DEFICIT",
+  SURPLUS_DEFICIT_TO_GDP: "SURPLUS_DEFICIT_TO_GDP",
+  INTEREST_BILLS_TO_GDP: "INTEREST_BILLS_TO_GDP",
+  LIQUIDITY_COVER: "LIQUIDITY_COVER",
+  TREASURY_10_YEAR: "TREASURY_10_YEAR",
+  TREASURY_10_YEAR_RATE_CHANGE: "TREASURY_10_YEAR_RATE_CHANGE",
+  CBBS_TOTAL_ASSETS: "CBBS_TOTAL_ASSETS",
+  CBBS_TOTAL_ASSETS_TO_GDP: "CBBS_TOTAL_ASSETS_TO_GDP",
+} as const;
+export type INDICATOR_TYPE = (typeof INDICATOR_TYPE)[keyof typeof INDICATOR_TYPE];
 
-export enum FREQUENCY {
-  DAILY = "DAILY",
-  WEEKLY = "WEEKLY",
-  MONTHLY = "MONTHLY",
-  QUARTERLY = "QUARTERLY",
-  YEARLY = "YEARLY",
-}
+export const FREQUENCY = {
+  DAILY: "DAILY",
+  WEEKLY: "WEEKLY",
+  MONTHLY: "MONTHLY",
+  QUARTERLY: "QUARTERLY",
+  YEARLY: "YEARLY",
+} as const;
+export type FREQUENCY = (typeof FREQUENCY)[keyof typeof FREQUENCY];
 
-export enum TRADABLE_TYPES {
-  EX_COMMOD_MAJ = "EX_COMMOD_MAJ",
-  EX_COMMOD_MIN = "EX_COMMOD_MIN",
-  COMMOD_MAJ = "COMMOD_MAJ",
-  COMMOD_MIN = "COMMOD_MIN",
-}
+export const TRADABLE_TYPES = {
+  EX_COMMOD_MAJ: "EX_COMMOD_MAJ",
+  EX_COMMOD_MIN: "EX_COMMOD_MIN",
+  COMMOD_MAJ: "COMMOD_MAJ",
+  COMMOD_MIN: "COMMOD_MIN",
+} as const;
+export type TRADABLE_TYPES = (typeof TRADABLE_TYPES)[keyof typeof TRADABLE_TYPES];
 
-export enum UNIT {
-  THOUSANDS = "THOUSANDS",
-  BILLIONS = "BILLIONS",
-  MILLIONS = "MILLIONS",
-  PERCENT = "PERCENT",
-  INDEX = "INDEX",
-  CURRENCY = "CURRENCY",
-}
+export const UNIT = {
+  THOUSANDS: "THOUSANDS",
+  BILLIONS: "BILLIONS",
+  MILLIONS: "MILLIONS",
+  PERCENT: "PERCENT",
+  INDEX: "INDEX",
+  CURRENCY: "CURRENCY",
+} as const;
+export type UNIT = (typeof UNIT)[keyof typeof UNIT];
 
 export interface IndicatorValue {
   country: COUNTRY_CODE;
@@ -71,37 +75,39 @@ export interface IndicatorValue {
   currency?: Currency;
 }
 
-export enum COUNTRY_CODE {
-  USA = "usa",
-  EUROZONE = "emu",
-  AUSTRALIA = "aus",
-  JAPAN = "jpn",
-  CANADA = "can",
-  NEW_ZEALAND = "nzl",
-  UNITED_KINGDOM = "gbr",
-  SWITZERLAND = "che",
-  NORWAY = "nor",
-  SWEDEN = "swe",
-  HUNGARY = "hun",
-  SOUTH_AFRICA = "zaf",
-  RUSSIA = "rus",
-}
+export const COUNTRY_CODE = {
+  USA: "usa",
+  EUROZONE: "emu",
+  AUSTRALIA: "aus",
+  JAPAN: "jpn",
+  CANADA: "can",
+  NEW_ZEALAND: "nzl",
+  UNITED_KINGDOM: "gbr",
+  SWITZERLAND: "che",
+  NORWAY: "nor",
+  SWEDEN: "swe",
+  HUNGARY: "hun",
+  SOUTH_AFRICA: "zaf",
+  RUSSIA: "rus",
+} as const;
+export type COUNTRY_CODE = (typeof COUNTRY_CODE)[keyof typeof COUNTRY_CODE];
 
-export enum Currency {
-  EUR = "EUR",
-  USD = "USD",
-  AUD = "AUD",
-  JPY = "JPY",
-  CAD = "CAD",
-  NZD = "NZD",
-  GBP = "GBP",
-  CHF = "CHF",
-  NOK = "NOK",
-  SEK = "SEK",
-  HUF = "HUF",
-  ZAR = "ZAR",
-  RUB = "RUB",
-}
+export const Currency = {
+  EUR: "EUR",
+  USD: "USD",
+  AUD: "AUD",
+  JPY: "JPY",
+  CAD: "CAD",
+  NZD: "NZD",
+  GBP: "GBP",
+  CHF: "CHF",
+  NOK: "NOK",
+  SEK: "SEK",
+  HUF: "HUF",
+  ZAR: "ZAR",
+  RUB: "RUB",
+} as const;
+export type Currency = (typeof Currency)[keyof typeof Currency];
 
 export interface TradableFX {
   id: string;
@@ -258,6 +264,7 @@ export interface CountryList {
   currency: string;
   currencyName: string;
   cftcCode: string;
+  enabled: boolean;
 }
 
 export const COUNTRY_LIST: CountryList[] = [
@@ -269,6 +276,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "USD",
     currencyName: "United States Dollar",
     cftcCode: "098662",
+    enabled: true,
   },
   {
     code: COUNTRY_CODE.EUROZONE,
@@ -278,6 +286,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "EUR",
     currencyName: "Euro",
     cftcCode: "099741",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.AUSTRALIA,
@@ -287,6 +296,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "AUD",
     currencyName: "Australian Dollar",
     cftcCode: "232741",
+    enabled: true,
   },
   {
     code: COUNTRY_CODE.JAPAN,
@@ -296,6 +306,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "JPY",
     currencyName: "Japanese Yen",
     cftcCode: "097741",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.CANADA,
@@ -305,6 +316,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "CAD",
     currencyName: "Canadian Dollar",
     cftcCode: "090741",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.NEW_ZEALAND,
@@ -314,6 +326,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "NZD",
     currencyName: "New Zealand Dollar",
     cftcCode: "112741",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.UNITED_KINGDOM,
@@ -323,6 +336,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "GBP",
     currencyName: "British Pound Sterling",
     cftcCode: "096742",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.SWITZERLAND,
@@ -332,6 +346,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "CHF",
     currencyName: "Swiss Franc",
     cftcCode: "092741",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.NORWAY,
@@ -341,6 +356,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "NOK",
     currencyName: "Norwegian Krone",
     cftcCode: "",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.SWEDEN,
@@ -350,6 +366,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "SEK",
     currencyName: "Swedish Krona",
     cftcCode: "",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.HUNGARY,
@@ -359,6 +376,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "HUF",
     currencyName: "Hungarian Forint",
     cftcCode: "",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.SOUTH_AFRICA,
@@ -368,6 +386,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "ZAR",
     currencyName: "South African Rand",
     cftcCode: "",
+    enabled: false,
   },
   {
     code: COUNTRY_CODE.RUSSIA,
@@ -377,6 +396,7 @@ export const COUNTRY_LIST: CountryList[] = [
     currency: "RUB",
     currencyName: "Russian Ruble",
     cftcCode: "089741",
+    enabled: false,
   },
 ];
 
